@@ -28,4 +28,9 @@ class MainWindow extends JFrame("Auction Sniper") {
   pack()
   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
   setVisible(true)
+
+  def showStatus(status: String) {
+    sniperStatus.setText(status)
+  }
 }
+

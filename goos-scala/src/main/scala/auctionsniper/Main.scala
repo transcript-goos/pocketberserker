@@ -18,16 +18,10 @@ object Main {
 
   def main(args: Array[String]) {
     val main = new Main()
-    val connection = connectTo(args(ARG_HOSTNAME), args(ARG_USERNAME), args(ARG_PASSWORD))
-    val chat = connection.getChatManager().createChat(auctionId(args(ARG_ITEM_ID), connection),
-      new MessageListener() {
-        def processMessage(aChat: Chat, message: Message) {
-        }
-      })
-    chat.sendMessage(new Message())
+    main.joinAuction(connection(args(ARG_HOSTNAME), args(ARG_USERNAME), args(ARG_PASSWORD)), args(ARG_ITEM_ID))
   }
 
-  private def connectTo(hostname: String, username: String, password: String) = {
+  private def connection(hostname: String, username: String, password: String) = {
     val connection = new XMPPConnection(hostname)
     connection.connect()
     connection.login(username, password, AUCTION_RESOURCE)
@@ -41,7 +35,12 @@ object Main {
 
 class Main {
 
+  import Main._
+
   private var ui : Option[MainWindow] = None
+
+  @SuppressWarnings(Array("unused"))
+  private var notToBeGCd : Option[Chat] = None
 
   startUserInterface()
 
@@ -51,6 +50,24 @@ class Main {
         ui = Some(new MainWindow())
       }
     })
+  }
+
+  private def joinAuction(connection: XMPPConnection, itemId: String) {
+    val chat = connection.getChatManager().createChat(auctionId(itemId, connection),
+      new MessageListener() {
+        def processMessage(aChat: Chat, message: Message) {
+          SwingUtilities.invokeLater(new Runnable() {
+            def run() {
+              ui match {
+                case Some(window) => window.showStatus(STATUS_LOST)
+                case None => ()
+              }
+            }
+          })
+        }
+      })
+    notToBeGCd = Some(chat)
+    chat.sendMessage(new Message())
   }
 }
 
