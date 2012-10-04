@@ -28,9 +28,8 @@ object Main {
     connection
   }
 
-  private def auctionId(itemId: String, connection: XMPPConnection) = {
+  private def auctionId(itemId: String, connection: XMPPConnection) =
     AUCTION_ID_FORMAT.format(itemId, connection.getServiceName)
-  }
 }
 
 class Main {
