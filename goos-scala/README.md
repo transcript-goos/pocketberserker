@@ -13,7 +13,7 @@ IntelliJ IDEA上で開発しています。
 ライブラリ関係
 --------------------
 
-WindowLickerは[WindowLickerのページ][windowlicker]からsourceを取得し、ビルドしてください。
+WindowLickerは[WindowLickerのページ][windowlicker]を参考にsourceを取得し、ビルドしてください。
 
 その他のライブラリはsbt経由で取得できるようにしています。
 
