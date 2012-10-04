@@ -10,4 +10,12 @@
 
 IntelliJ IDEA上で開発しています。
 
+ライブラリ関係
+--------------------
+
+WindowLickerは[WindowLickerのページ][windowlicker]からsourceを取得し、ビルドしてください。
+
+その他のライブラリはsbt経由で取得できるようにしています。
+
 [stack]: http://typesafe.com/stack/download
+[windowlicker]: http://code.google.com/p/windowlicker/source/checkout
