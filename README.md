@@ -15,3 +15,10 @@ pocketberserkerの実践テスト駆動開発写経広場
 
 このリポジトリに含まれているものはApache2.0予定だよっ
 
+
+全体的に必要そうなもの
+----------------------------
+
+おそらく[Openfire][openfire]が必要になるのでインストールしましょう
+
+[openfire]: http://www.igniterealtime.org/projects/openfire/
