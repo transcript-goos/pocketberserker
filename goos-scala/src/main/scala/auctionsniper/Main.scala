@@ -53,7 +53,7 @@ class Main {
   }
 
   private def joinAuction(connection: XMPPConnection, itemId: String) {
-    val chat = connection.getChatManager().createChat(auctionId(itemId, connection),
+    val chat = connection.getChatManager.createChat(auctionId(itemId, connection),
       new MessageListener() {
         def processMessage(aChat: Chat, message: Message) {
           SwingUtilities.invokeLater(new Runnable() {
