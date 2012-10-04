@@ -18,6 +18,7 @@ class FakeAuctionServer(val itemId: String) extends JUnitMustMatchers {
 
   private val connection = new XMPPConnection(XMPP_HOSTNAME)
   private var currentChat : Option[Chat] = None
+  private val messageListener = new SingleMessageListener()
 
   def startSellingItem() {
     connection.connect()
@@ -26,8 +27,38 @@ class FakeAuctionServer(val itemId: String) extends JUnitMustMatchers {
       new ChatManagerListener() {
         def chatCreated(chat: Chat, createdLocally: Boolean) {
           currentChat = Some(chat)
+          chat.addMessageListener(messageListener)
         }
       }
     )
   }
+
+  def hasReceivedJoinRequestFromSniper() {
+    messageListener.receivesAMessage()
+  }
+
+  def announceClosed() {
+    currentChat match {
+      case Some(chat) => chat.sendMessage(new Message())
+      case None => ()
+    }
+  }
+
+  def stop() {
+    connection.disconnect()
+  }
+
+  class SingleMessageListener extends MessageListener {
+
+    private val messages = new ArrayBlockingQueue[Message](1)
+
+    def processMessage(chat: Chat, message: Message) {
+      messages.add(message)
+    }
+
+    def receivesAMessage() {
+      messages.poll(5, TimeUnit.SECONDS) must not beNull
+    }
+  }
 }
+
