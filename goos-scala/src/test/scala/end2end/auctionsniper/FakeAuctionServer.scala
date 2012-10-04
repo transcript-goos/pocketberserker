@@ -38,10 +38,7 @@ class FakeAuctionServer(val itemId: String) extends JUnitMustMatchers {
   }
 
   def announceClosed() {
-    currentChat match {
-      case Some(chat) => chat.sendMessage(new Message())
-      case None => ()
-    }
+    currentChat.foreach(_.sendMessage(new Message()))
   }
 
   def stop() {

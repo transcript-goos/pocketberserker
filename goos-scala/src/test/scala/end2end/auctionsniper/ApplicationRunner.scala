@@ -30,16 +30,10 @@ class ApplicationRunner {
   }
 
   def showsSniperHasLostAcution() {
-    driver match {
-      case Some(d) => d.showsSniperStatus(STATUS_LOST) // test case
-      case None => ()
-    }
+    driver.foreach(_.showsSniperStatus(STATUS_LOST))
   }
 
   def stop() {
-    driver match {
-      case Some(d) => d.dispose()
-      case None => ()
-    }
+    driver.foreach(_.dispose())
   }
 }

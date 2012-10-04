@@ -58,10 +58,7 @@ class Main {
         def processMessage(aChat: Chat, message: Message) {
           SwingUtilities.invokeLater(new Runnable() {
             def run() {
-              ui match {
-                case Some(window) => window.showStatus(STATUS_LOST)
-                case None => ()
-              }
+              ui.foreach(_.showStatus((STATUS_LOST)))
             }
           })
         }
