@@ -6,8 +6,6 @@ import org.jivesoftware.smack.packet.Message
 
 object Main {
 
-  val STATUS_JOINING = "Joining"
-  val STATUS_LOST = "Lost"
   private val ARG_HOSTNAME = 0
   private val ARG_USERNAME = 1
   private val ARG_PASSWORD = 2
@@ -58,7 +56,7 @@ class Main {
         def processMessage(aChat: Chat, message: Message) {
           SwingUtilities.invokeLater(new Runnable() {
             def run() {
-              ui.foreach(_.showStatus((STATUS_LOST)))
+              ui.foreach(_.showStatus((MainWindow.STATUS_LOST)))
             }
           })
         }
