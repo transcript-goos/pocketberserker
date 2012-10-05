@@ -1,7 +1,7 @@
 package auctionsniper
 
 import javax.swing.SwingUtilities
-import org.jivesoftware.smack.{Chat, XMPPConnection}
+import org.jivesoftware.smack.{XMPPException, Chat, XMPPConnection}
 import java.awt.event.{WindowEvent, WindowAdapter}
 
 object Main {
@@ -54,13 +54,20 @@ class Main extends SniperListener {
 
   private def joinAuction(connection: XMPPConnection, itemId: String) {
 
-    val nullAuction = new Auction {
-      def bid(amount: Int) {}
-    }
     disconnectWhenUICloses(connection)
 
-    val chat = connection.getChatManager.createChat(auctionId(itemId, connection),
-      new AuctionMessageTranslator(new AuctionSniper(nullAuction, this)))
+    val chat = connection.getChatManager.createChat(auctionId(itemId, connection), null)
+    val auction = new Auction() {
+      def bid(amount: Int) {
+        try {
+          chat.sendMessage(BID_COMMAND_FORMAT.format(amount))
+        } catch {
+          case e: XMPPException => e.printStackTrace()
+        }
+      }
+    }
+    chat.addMessageListener(
+      new AuctionMessageTranslator(new AuctionSniper(auction, this)))
     notToBeGCd = Some(chat)
     chat.sendMessage(JOIN_COMMAND_FORMAT)
   }
