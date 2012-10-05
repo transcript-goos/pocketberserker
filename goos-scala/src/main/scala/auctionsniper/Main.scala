@@ -57,19 +57,12 @@ class Main extends SniperListener {
     disconnectWhenUICloses(connection)
 
     val chat = connection.getChatManager.createChat(auctionId(itemId, connection), null)
-    val auction = new Auction() {
-      def bid(amount: Int) {
-        try {
-          chat.sendMessage(BID_COMMAND_FORMAT.format(amount))
-        } catch {
-          case e: XMPPException => e.printStackTrace()
-        }
-      }
-    }
+    notToBeGCd = Some(chat)
+
+    val auction = new XMPPAuction(chat)
     chat.addMessageListener(
       new AuctionMessageTranslator(new AuctionSniper(auction, this)))
-    notToBeGCd = Some(chat)
-    chat.sendMessage(JOIN_COMMAND_FORMAT)
+    auction.join()
   }
 
   def sniperLost() {
@@ -96,6 +89,25 @@ class Main extends SniperListener {
         window.foreach(_.showStatus(MainWindow.STATUS_BIDDING))
       }
     })
+  }
+
+  class XMPPAuction(private val chat: Chat) extends Auction {
+
+    def bid(amount: Int) {
+      sendMessage(BID_COMMAND_FORMAT.format(amount))
+    }
+
+    def join() {
+      sendMessage(JOIN_COMMAND_FORMAT)
+    }
+
+    private def sendMessage(message: String) {
+      try {
+        chat.sendMessage(message)
+      } catch {
+        case e: XMPPException => e.printStackTrace()
+      }
+    }
   }
 }
 
