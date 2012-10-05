@@ -1,7 +1,8 @@
-package auctionsniper
+package auctionsniper.xmpp
 
 import org.jivesoftware.smack.{Chat, MessageListener}
 import org.jivesoftware.smack.packet.Message
+import auctionsniper.AuctionEventListener
 
 class AuctionMessageTranslator(private val listener: AuctionEventListener) extends MessageListener {
 

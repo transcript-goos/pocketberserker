@@ -1,10 +1,11 @@
-package unit
+package unit.aucionsniper.xmpp
 
 import org.specs2.mutable._
 import org.jivesoftware.smack.Chat
 import org.jivesoftware.smack.packet.Message
-import auctionsniper.{AuctionEventListener, AuctionMessageTranslator}
+import auctionsniper.AuctionEventListener
 import org.specs2.mock.Mockito
+import auctionsniper.xmpp.AuctionMessageTranslator
 
 object AuctionMessageTranslatorTest {
   val UNUSED_CHAT : Chat = null

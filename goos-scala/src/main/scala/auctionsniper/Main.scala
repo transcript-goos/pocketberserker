@@ -36,6 +36,7 @@ class Main {
 
   import Main._
   import ui.MainWindow
+  import xmpp.AuctionMessageTranslator
 
   private var window : Option[MainWindow] = None
 
