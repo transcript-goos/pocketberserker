@@ -5,7 +5,7 @@ import org.jivesoftware.smack.{XMPPException, Chat, XMPPConnection}
 import java.awt.event.{WindowEvent, WindowAdapter}
 
 object Main {
-  val BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: Bid; Price: %d;"
+  val BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %d;"
 
   private val ARG_HOSTNAME = 0
   private val ARG_USERNAME = 1
