@@ -21,7 +21,6 @@ object MainWindow {
 
 class MainWindow extends JFrame("Auction Sniper") {
 
-  import Main._
   import MainWindow._
 
   private val sniperStatus = createLabel(STATUS_JOINING)

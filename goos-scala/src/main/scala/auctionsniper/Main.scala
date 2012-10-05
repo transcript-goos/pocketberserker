@@ -1,8 +1,7 @@
 package auctionsniper
 
 import javax.swing.SwingUtilities
-import org.jivesoftware.smack.{Chat, MessageListener, XMPPConnection}
-import org.jivesoftware.smack.packet.Message
+import org.jivesoftware.smack.{Chat, XMPPConnection}
 import java.awt.event.{WindowEvent, WindowAdapter}
 
 object Main {
