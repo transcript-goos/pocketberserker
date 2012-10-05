@@ -53,9 +53,14 @@ class Main extends SniperListener {
   }
 
   private def joinAuction(connection: XMPPConnection, itemId: String) {
+
+    val nullAuction = new Auction {
+      def bid(amount: Int) {}
+    }
     disconnectWhenUICloses(connection)
+
     val chat = connection.getChatManager.createChat(auctionId(itemId, connection),
-      new AuctionMessageTranslator(new AuctionSniper(this)))
+      new AuctionMessageTranslator(new AuctionSniper(nullAuction, this)))
     notToBeGCd = Some(chat)
     chat.sendMessage(JOIN_COMMAND_FORMAT)
   }
@@ -76,6 +81,14 @@ class Main extends SniperListener {
         }
       })
     )
+  }
+
+  def sniperBidding() {
+    SwingUtilities.invokeLater(new Runnable {
+      def run() {
+        window.foreach(_.showStatus(MainWindow.STATUS_BIDDING))
+      }
+    })
   }
 }
 
