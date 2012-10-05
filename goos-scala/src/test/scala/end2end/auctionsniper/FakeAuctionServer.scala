@@ -3,7 +3,7 @@ package end2end.auctionsniper
 import org.jivesoftware.smack.{MessageListener, Chat, ChatManagerListener, XMPPConnection}
 import org.jivesoftware.smack.packet.Message
 import java.util.concurrent.{TimeUnit, ArrayBlockingQueue}
-import org.specs2.matcher.{AlwaysMatcher, JUnitMustMatchers, Matcher}
+import org.specs2.matcher.{JUnitMustMatchers, Matcher}
 import auctionsniper.Main
 
 object FakeAuctionServer {
@@ -34,12 +34,12 @@ class FakeAuctionServer(val itemId: String) extends JUnitMustMatchers {
     )
   }
 
-  def hasReceivedJoinRequestFromSniper() {
-    messageListener.receivesAMessage(new AlwaysMatcher())
+  def hasReceivedJoinRequestFrom(sniperId: String) {
+    receivesAMessageMatching(sniperId, equalTo(Main.JOIN_COMMAND_FORMAT))
   }
 
   def announceClosed() {
-    currentChat.foreach(_.sendMessage(new Message()))
+    currentChat.foreach(_.sendMessage("SOLVersion: 1.1; Event: CLOSE;"))
   }
 
   def stop() {
@@ -54,10 +54,13 @@ class FakeAuctionServer(val itemId: String) extends JUnitMustMatchers {
   }
 
   def hasReceivedBid(bid: Int, sniperId: String) {
+    receivesAMessageMatching(sniperId,
+      equalTo(Main.JOIN_COMMAND_FORMAT.format(bid)))
+  }
+
+  def receivesAMessageMatching[T >: String](sniperId: String, messageMatcher: Matcher[T]) {
+    messageListener.receivesAMessage(messageMatcher)
     currentChat.foreach(_.getParticipant must_== sniperId)
-    messageListener.receivesAMessage(equalTo(
-      "SOLVersion: 1.1; Command: BID; Price: %d;".format(bid)
-    ))
   }
 
   class SingleMessageListener extends MessageListener {

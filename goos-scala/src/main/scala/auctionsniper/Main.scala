@@ -15,6 +15,7 @@ object Main {
   private val AUCTION_RESOURCE = "Auction"
   private val ITEM_ID_AS_LOGIN = "auction-%s"
   private val AUCTION_ID_FORMAT = ITEM_ID_AS_LOGIN + "@%s/" + AUCTION_RESOURCE
+  val JOIN_COMMAND_FORMAT = "SOLersion: 1.1; Command: BID; Price: %d;"
 
   def main(args: Array[String]) {
     val main = new Main()
@@ -63,7 +64,7 @@ class Main {
         }
       })
     notToBeGCd = Some(chat)
-    chat.sendMessage(new Message())
+    chat.sendMessage(JOIN_COMMAND_FORMAT)
   }
 }
 

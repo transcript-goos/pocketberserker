@@ -12,7 +12,7 @@ class AuctionSniperEndToEndTest extends JUnitMustMatchers {
   def sniperJoinsAuctionUntilAuctionCloses() {
     auction.startSellingItem()
     application.startBiddingIn(auction)
-    auction.hasReceivedJoinRequestFromSniper()
+    auction.hasReceivedJoinRequestFrom(ApplicationRunner.SNIPER_XMPP_ID)
     auction.announceClosed()
     application.showsSniperHasLostAcution()
   }
@@ -22,7 +22,7 @@ class AuctionSniperEndToEndTest extends JUnitMustMatchers {
     auction.startSellingItem()
 
     application.startBiddingIn(auction)
-    auction.hasReceivedJoinRequestFromSniper()
+    auction.hasReceivedJoinRequestFrom(ApplicationRunner.SNIPER_XMPP_ID)
 
     auction.reportPrice(1000, 98, "other bidder")
 
