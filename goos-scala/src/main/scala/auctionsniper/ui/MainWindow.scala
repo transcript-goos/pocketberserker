@@ -1,4 +1,4 @@
-package auctionsniper
+package auctionsniper.ui
 
 import javax.swing.{JLabel, JFrame}
 import javax.swing.border.LineBorder

@@ -35,8 +35,9 @@ object Main {
 class Main extends AuctionEventListener {
 
   import Main._
+  import ui.MainWindow
 
-  private var ui : Option[MainWindow] = None
+  private var window : Option[MainWindow] = None
 
   @SuppressWarnings(Array("unused"))
   private var notToBeGCd : Option[Chat] = None
@@ -46,7 +47,7 @@ class Main extends AuctionEventListener {
   private def startUserInterface() {
     SwingUtilities.invokeAndWait(new Runnable() {
       def run() {
-        ui = Some(new MainWindow())
+        window = Some(new MainWindow())
       }
     })
   }
@@ -62,13 +63,13 @@ class Main extends AuctionEventListener {
   def auctionClosed() {
     SwingUtilities.invokeLater(new Runnable() {
       def run() {
-        ui.foreach(_.showStatus((MainWindow.STATUS_LOST)))
+        window.foreach(_.showStatus((MainWindow.STATUS_LOST)))
       }
     })
   }
 
   private def disconnectWhenUICloses(connection: XMPPConnection) {
-    ui.foreach(
+    window.foreach(
       _.addWindowListener(new WindowAdapter() {
         override def windowClosed(e: WindowEvent) {
           connection.disconnect()

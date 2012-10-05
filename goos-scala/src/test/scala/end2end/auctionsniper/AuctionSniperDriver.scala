@@ -5,7 +5,7 @@ import org.hamcrest.CoreMatchers._
 import com.objogate.wl.swing.driver.{ComponentDriver, JLabelDriver, JFrameDriver}
 import com.objogate.wl.swing.gesture.GesturePerformer
 import com.objogate.wl.swing.AWTEventQueueProber
-import auctionsniper.MainWindow
+import auctionsniper.ui.MainWindow
 
 class AuctionSniperDriver(val timeoutMillis: Int)
   extends JFrameDriver(new GesturePerformer(),
