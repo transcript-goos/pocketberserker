@@ -8,7 +8,8 @@ object ApplicationRunner {
 
 class ApplicationRunner {
 
-  import auctionsniper.Main._
+  import auctionsniper._
+  import MainWindow._
   import ApplicationRunner._
 
   private var driver : Option[AuctionSniperDriver] = None
@@ -17,7 +18,7 @@ class ApplicationRunner {
     val thread = new Thread("Test Application") {
       override def run() {
         try {
-          main(Array(FakeAuctionServer.XMPP_HOSTNAME, SNIPER_ID, SNIPER_PASSWORD, auction.itemId))
+          Main.main(Array(FakeAuctionServer.XMPP_HOSTNAME, SNIPER_ID, SNIPER_PASSWORD, auction.itemId))
         } catch {
           case e: Exception => e.printStackTrace()
         }
@@ -36,5 +37,9 @@ class ApplicationRunner {
 
   def stop() {
     driver.foreach(_.dispose())
+  }
+
+  def hasShownSniperIsBidding() {
+    driver.foreach(_.showsSniperStatus(MainWindow.STATUS_BIDDING))
   }
 }
