@@ -3,6 +3,7 @@ package auctionsniper
 import javax.swing.SwingUtilities
 import org.jivesoftware.smack.{Chat, MessageListener, XMPPConnection}
 import org.jivesoftware.smack.packet.Message
+import java.awt.event.{WindowEvent, WindowAdapter}
 
 object Main {
 
@@ -51,6 +52,7 @@ class Main {
   }
 
   private def joinAuction(connection: XMPPConnection, itemId: String) {
+    disconnectWhenUICloses(connection)
     val chat = connection.getChatManager.createChat(auctionId(itemId, connection),
       new MessageListener() {
         def processMessage(aChat: Chat, message: Message) {
@@ -63,6 +65,16 @@ class Main {
       })
     notToBeGCd = Some(chat)
     chat.sendMessage(JOIN_COMMAND_FORMAT)
+  }
+
+  private def disconnectWhenUICloses(connection: XMPPConnection) {
+    ui.foreach(
+      _.addWindowListener(new WindowAdapter() {
+        override def windowClosed(e: WindowEvent) {
+          connection.disconnect()
+        }
+      })
+    )
   }
 }
 
