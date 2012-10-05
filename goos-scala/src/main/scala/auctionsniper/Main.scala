@@ -6,6 +6,7 @@ import org.jivesoftware.smack.packet.Message
 import java.awt.event.{WindowEvent, WindowAdapter}
 
 object Main {
+  val BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: Bid; Price: %d;"
 
   private val ARG_HOSTNAME = 0
   private val ARG_USERNAME = 1
@@ -14,7 +15,7 @@ object Main {
   private val AUCTION_RESOURCE = "Auction"
   private val ITEM_ID_AS_LOGIN = "auction-%s"
   private val AUCTION_ID_FORMAT = ITEM_ID_AS_LOGIN + "@%s/" + AUCTION_RESOURCE
-  val JOIN_COMMAND_FORMAT = "SOLersion: 1.1; Command: BID; Price: %d;"
+  val JOIN_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %d;"
 
   def main(args: Array[String]) {
     val main = new Main()
@@ -32,7 +33,7 @@ object Main {
     AUCTION_ID_FORMAT.format(itemId, connection.getServiceName)
 }
 
-class Main {
+class Main extends AuctionEventListener {
 
   import Main._
 
@@ -54,17 +55,17 @@ class Main {
   private def joinAuction(connection: XMPPConnection, itemId: String) {
     disconnectWhenUICloses(connection)
     val chat = connection.getChatManager.createChat(auctionId(itemId, connection),
-      new MessageListener() {
-        def processMessage(aChat: Chat, message: Message) {
-          SwingUtilities.invokeLater(new Runnable() {
-            def run() {
-              ui.foreach(_.showStatus((MainWindow.STATUS_LOST)))
-            }
-          })
-        }
-      })
+      new AuctionMessageTranslator(this))
     notToBeGCd = Some(chat)
     chat.sendMessage(JOIN_COMMAND_FORMAT)
+  }
+
+  def auctionClosed() {
+    SwingUtilities.invokeLater(new Runnable() {
+      def run() {
+        ui.foreach(_.showStatus((MainWindow.STATUS_LOST)))
+      }
+    })
   }
 
   private def disconnectWhenUICloses(connection: XMPPConnection) {
