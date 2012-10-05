@@ -5,9 +5,11 @@ import javax.swing.border.LineBorder
 import java.awt.Color
 
 object MainWindow {
+
   val STATUS_JOINING = "Joining"
   val STATUS_LOST = "Lost"
   val STATUS_BIDDING = "Bidding"
+  val STATUS_WINNING = "Winning"
   val MAIN_WINDOW_NAME = "Auction Sniper Main"
   val SNIPER_STATUS_NAME = "sniper status"
 

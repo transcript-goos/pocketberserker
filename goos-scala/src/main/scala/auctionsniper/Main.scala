@@ -32,7 +32,7 @@ object Main {
     AUCTION_ID_FORMAT.format(itemId, connection.getServiceName)
 }
 
-class Main extends SniperListener {
+class Main {
 
   import Main._
   import ui.MainWindow
@@ -61,16 +61,10 @@ class Main extends SniperListener {
 
     val auction = new XMPPAuction(chat)
     chat.addMessageListener(
-      new AuctionMessageTranslator(new AuctionSniper(auction, this)))
+      new AuctionMessageTranslator(
+        new AuctionSniper(auction, new SniperStateDisplayer()))
+    )
     auction.join()
-  }
-
-  def sniperLost() {
-    SwingUtilities.invokeLater(new Runnable() {
-      def run() {
-        window.foreach(_.showStatus((MainWindow.STATUS_LOST)))
-      }
-    })
   }
 
   private def disconnectWhenUICloses(connection: XMPPConnection) {
@@ -81,14 +75,6 @@ class Main extends SniperListener {
         }
       })
     )
-  }
-
-  def sniperBidding() {
-    SwingUtilities.invokeLater(new Runnable {
-      def run() {
-        window.foreach(_.showStatus(MainWindow.STATUS_BIDDING))
-      }
-    })
   }
 
   class XMPPAuction(private val chat: Chat) extends Auction {
@@ -107,6 +93,27 @@ class Main extends SniperListener {
       } catch {
         case e: XMPPException => e.printStackTrace()
       }
+    }
+  }
+
+  class SniperStateDisplayer extends SniperListener {
+
+    def sniperBidding() {
+      showStatus(MainWindow.STATUS_BIDDING)
+    }
+
+    def sniperLost() {
+      showStatus(MainWindow.STATUS_LOST)
+    }
+
+    def sniperWinning() {
+      showStatus(MainWindow.STATUS_WINNING)
+    }
+
+    private def showStatus(status: String) {
+      SwingUtilities.invokeLater(new Runnable() {
+        def run() { window.foreach(_.showStatus(status))}
+      })
     }
   }
 }
