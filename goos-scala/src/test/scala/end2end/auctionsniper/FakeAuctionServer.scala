@@ -25,7 +25,7 @@ class FakeAuctionServer(val itemId: String) extends JUnitMustMatchers {
     connection.connect()
     connection.login(ITEM_ID_AS_LOGIN.format(itemId), AUCTION_PASSWORD, AUCTION_RESOURCE)
     connection.getChatManager.addChatListener(
-      new ChatManagerListener() {
+      new ChatManagerListener {
         def chatCreated(chat: Chat, createdLocally: Boolean) {
           currentChat = Some(chat)
           chat.addMessageListener(messageListener)

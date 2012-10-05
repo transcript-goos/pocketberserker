@@ -46,7 +46,7 @@ class Main {
   startUserInterface()
 
   private def startUserInterface() {
-    SwingUtilities.invokeAndWait(new Runnable() {
+    SwingUtilities.invokeAndWait(new Runnable {
       def run() {
         window = Some(new MainWindow())
       }
@@ -70,7 +70,7 @@ class Main {
 
   private def disconnectWhenUICloses(connection: XMPPConnection) {
     window.foreach(
-      _.addWindowListener(new WindowAdapter() {
+      _.addWindowListener(new WindowAdapter {
         override def windowClosed(e: WindowEvent) {
           connection.disconnect()
         }
@@ -112,7 +112,7 @@ class Main {
     }
 
     private def showStatus(status: String) {
-      SwingUtilities.invokeLater(new Runnable() {
+      SwingUtilities.invokeLater(new Runnable {
         def run() { window.foreach(_.showStatus(status))}
       })
     }

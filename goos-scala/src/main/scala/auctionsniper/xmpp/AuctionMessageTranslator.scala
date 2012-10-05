@@ -40,6 +40,6 @@ class AuctionMessageTranslator(private val listener: AuctionEventListener) exten
 
   trait EventType {}
   case class Close() extends EventType
-  case class Price(val currentPrice: Int, val increment: Int) extends EventType
+  case class Price(currentPrice: Int, increment: Int) extends EventType
 }
 
