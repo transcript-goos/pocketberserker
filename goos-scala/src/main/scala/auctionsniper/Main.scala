@@ -32,7 +32,7 @@ object Main {
     AUCTION_ID_FORMAT.format(itemId, connection.getServiceName)
 }
 
-class Main extends AuctionEventListener {
+class Main extends SniperListener {
 
   import Main._
   import ui.MainWindow
@@ -55,12 +55,12 @@ class Main extends AuctionEventListener {
   private def joinAuction(connection: XMPPConnection, itemId: String) {
     disconnectWhenUICloses(connection)
     val chat = connection.getChatManager.createChat(auctionId(itemId, connection),
-      new AuctionMessageTranslator(this))
+      new AuctionMessageTranslator(new AuctionSniper(this)))
     notToBeGCd = Some(chat)
     chat.sendMessage(JOIN_COMMAND_FORMAT)
   }
 
-  def auctionClosed() {
+  def sniperLost() {
     SwingUtilities.invokeLater(new Runnable() {
       def run() {
         window.foreach(_.showStatus((MainWindow.STATUS_LOST)))
@@ -77,7 +77,5 @@ class Main extends AuctionEventListener {
       })
     )
   }
-
-  def currentPrice(price: Int, increment: Int) {}
 }
 
