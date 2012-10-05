@@ -1,4 +1,4 @@
-package unit.aucionsniper.xmpp
+package unit.auctionsniper.xmpp
 
 import org.specs2.mutable._
 import org.jivesoftware.smack.Chat
