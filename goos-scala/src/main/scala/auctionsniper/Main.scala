@@ -77,5 +77,7 @@ class Main extends AuctionEventListener {
       })
     )
   }
+
+  def currentPrice(price: Int, increment: Int) {}
 }
 

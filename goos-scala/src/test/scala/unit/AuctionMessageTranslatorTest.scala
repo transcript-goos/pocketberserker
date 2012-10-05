@@ -28,6 +28,18 @@ class AuctionMessageTranslatorTest extends Specification with Mockito {
 
       there was one(listener).auctionClosed()
     }
+
+    "nofities bid details when current price message received" in {
+
+      val message = new Message()
+      message.setBody(
+        "SOLVersion: 1.1; Event: PRICE; CurrentPrice: 192; Increment: 7; Bidder: Someone else;"
+      )
+
+      translator.processMessage(UNUSED_CHAT, message)
+
+      there was one(listener).currentPrice(192, 7)
+    }
   }
 }
 
