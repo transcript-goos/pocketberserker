@@ -9,39 +9,37 @@ class AuctionMessageTranslator(private val listener: AuctionEventListener) exten
   def processMessage(chat: Chat, message: Message) {
     val event = AuctionEvent.from(message.getBody)
     event.eventType match {
-      case "CLOSE" => listener.auctionClosed()
-      case "PRICE" =>
-        listener.currentPrice(event.currentPrice, event.increment)
-      case _ => ()
+      case Close() => listener.auctionClosed()
+      case Price(currentPrice, increment) =>
+        listener.currentPrice(currentPrice, increment)
     }
   }
 
-  private class AuctionEvent {
-    val fields = new collection.mutable.HashMap[String, String]()
+  private class AuctionEvent(val fields: Map[String, String]) {
 
-    def eventType = get("Event")
-    def currentPrice = get("CurrentPrice").toInt
-    def increment = get("Increment").toInt
-
-    private def get(fieldName: String) = {
-      val value = fields(fieldName)
-      if(value == null) throw new Exception("Missing value for " + fieldName)
-      value
-    }
-
-    private def addField(field: String) {
-      val pair = field.split(":")
-      fields += (pair(0).trim -> pair(1).trim)
-    }
+    def eventType =
+      fields("Event") match {
+        case "CLOSE" => Close()
+        case "PRICE" => Price(fields("CurrentPrice").toInt, fields("Increment").toInt)
+        case other => throw new Exception("Missing value for" + other)
+      }
   }
 
   private object AuctionEvent {
-    def fieldIn(messageBody: String) = messageBody.split(";")
-    def from(messageBody: String) = {
-      val event = new AuctionEvent()
-      for (field <- fieldIn(messageBody))
-        event.addField(field)
-      event
+
+    private def fieldIn(messageBody: String) = messageBody.split(";")
+
+    private def createField(field: String) = {
+      val pair = field.split(":")
+      (pair(0).trim -> pair(1).trim)
     }
+
+    def from(messageBody: String) =
+      new AuctionEvent(fieldIn(messageBody).foldLeft(Map.empty[String, String])(_ + createField(_)))
   }
+
+  trait EventType {}
+  case class Close() extends EventType
+  case class Price(val currentPrice: Int, val increment: Int) extends EventType
 }
+
