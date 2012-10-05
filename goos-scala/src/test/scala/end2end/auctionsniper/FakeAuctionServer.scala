@@ -3,13 +3,14 @@ package end2end.auctionsniper
 import org.jivesoftware.smack.{MessageListener, Chat, ChatManagerListener, XMPPConnection}
 import org.jivesoftware.smack.packet.Message
 import java.util.concurrent.{TimeUnit, ArrayBlockingQueue}
-import org.specs2.matcher.JUnitMustMatchers
+import org.specs2.matcher.{AlwaysMatcher, JUnitMustMatchers, Matcher}
+import auctionsniper.Main
 
 object FakeAuctionServer {
   val ITEM_ID_AS_LOGIN = "auction-%s"
   val AUCTION_RESOURCE = "Auction"
   val XMPP_HOSTNAME = "localhost"
-  val AUCTION_PASSWORD = "auction"
+  private val AUCTION_PASSWORD = "auction"
 }
 
 class FakeAuctionServer(val itemId: String) extends JUnitMustMatchers {
@@ -34,7 +35,7 @@ class FakeAuctionServer(val itemId: String) extends JUnitMustMatchers {
   }
 
   def hasReceivedJoinRequestFromSniper() {
-    messageListener.receivesAMessage()
+    messageListener.receivesAMessage(new AlwaysMatcher())
   }
 
   def announceClosed() {
@@ -45,6 +46,20 @@ class FakeAuctionServer(val itemId: String) extends JUnitMustMatchers {
     connection.disconnect()
   }
 
+  def reportPrice(price: Int, increment: Int, bidder: String) {
+    currentChat.foreach(_.sendMessage(
+      "SOLVersion: 1.1; Event: PRICE; CurrentPrice: %d; Increment: %d; Bidder: %s;"
+        .format(price, increment, bidder)
+    ))
+  }
+
+  def hasReceivedBid(bid: Int, sniperId: String) {
+    currentChat.foreach(_.getParticipant must_== sniperId)
+    messageListener.receivesAMessage(equalTo(
+      "SOLVersion: 1.1; Command: BID; Price: %d;".format(bid)
+    ))
+  }
+
   class SingleMessageListener extends MessageListener {
 
     private val messages = new ArrayBlockingQueue[Message](1)
@@ -53,8 +68,12 @@ class FakeAuctionServer(val itemId: String) extends JUnitMustMatchers {
       messages.add(message)
     }
 
-    def receivesAMessage() {
-      messages.poll(5, TimeUnit.SECONDS) must not beNull
+    @SuppressWarnings(Array("unchecked"))
+    def receivesAMessage[T >: String](messageMatcher: Matcher[T]) {
+      val message =  messages.poll(5, TimeUnit.SECONDS)
+      message must not beNull
+      val body = message.getBody
+      body must messageMatcher
     }
   }
 }
