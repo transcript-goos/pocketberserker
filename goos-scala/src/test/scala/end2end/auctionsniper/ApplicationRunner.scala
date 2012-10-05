@@ -3,6 +3,7 @@ package end2end.auctionsniper
 object ApplicationRunner {
   val SNIPER_ID = "sniper"
   val SNIPER_PASSWORD = "sniper"
+  val SNIPER_XMPP_ID = SNIPER_ID + "@" + FakeAuctionServer.XMPP_HOSTNAME + "/Auction"
 }
 
 class ApplicationRunner {
