@@ -13,7 +13,7 @@ object GoosscalaBuild extends Build {
       scalaVersion := "2.9.2",
       libraryDependencies ++= Seq(
         "org.specs2" %% "specs2" % "1.12.1" % "test",
-        "junit" % "junit" % "4.10",
+        "junit" % "junit-dep" % "4.10",
         "org.hamcrest" % "hamcrest-library" % "1.3",
         "jivesoftware" % "smack" % "3.1.0",
         "jivesoftware" % "smackx" % "3.1.0",
