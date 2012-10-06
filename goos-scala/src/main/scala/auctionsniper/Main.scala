@@ -100,7 +100,7 @@ class Main {
 
   class SniperStateDisplayer extends SniperListener {
 
-    def sniperBidding(snapshot: SniperSnapshot) {
+    def sniperStateChanged(snapshot: SniperSnapshot) {
       SwingUtilities.invokeLater(new Runnable {
         def run() {
           window.foreach(_.sniperStateChanged(snapshot, MainWindow.STATUS_BIDDING))
