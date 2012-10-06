@@ -7,7 +7,11 @@ class AuctionSniper(private val auction: Auction, private val sniperListener: Sn
     sniperListener.sniperLost()
   }
   def currentPrice(price: Int, increment: Int, priceSource: PriceSource) {
-    auction.bid(price + increment)
-    sniperListener.sniperBidding()
+    priceSource match {
+      case FromSniper() => sniperListener.sniperWinning()
+      case FromOtherBidder() =>
+        auction.bid(price + increment)
+        sniperListener.sniperBidding()
+    }
   }
 }
