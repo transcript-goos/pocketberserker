@@ -12,9 +12,9 @@ class AuctionSniperTest extends Specification with Mockito {
   private val sniper = new AuctionSniper(auction, sniperListener)
 
   "AuctionSniper" should {
-    "reports lost when auction closes" in {
+    "reports lost if auction closes immediately" in {
       sniper.auctionClosed()
-      there was one(sniperListener).sniperLost()
+      there was atLeastOne(sniperListener).sniperLost()
     }
 
     "bids higher and reports bidding when new price arrives" in {
@@ -28,6 +28,15 @@ class AuctionSniperTest extends Specification with Mockito {
     "reports is winning when current price comes from sniper" in {
       sniper.currentPrice(123, 45, FromSniper())
       there was atLeastOne(sniperListener).sniperWinning()
+    }
+
+    "reports lost if auction closes when bidding" in {
+      sniper.currentPrice(123, 45, FromOtherBidder())
+      sniper.auctionClosed()
+      got {
+        atLeast(0)(sniperListener).sniperBidding()
+        atLeastOne(sniperListener).sniperLost()
+      }
     }
   }
 }
