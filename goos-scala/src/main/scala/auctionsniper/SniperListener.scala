@@ -6,4 +6,5 @@ trait SniperListener extends EventListener {
   def sniperLost() : Unit
   def sniperBidding(): Unit
   def sniperWinning(): Unit
+  def sniperWon(): Unit
 }

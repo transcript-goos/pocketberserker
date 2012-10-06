@@ -38,5 +38,14 @@ class AuctionSniperTest extends Specification with Mockito {
         atLeastOne(sniperListener).sniperLost()
       }
     }
+
+    "report won if auction closes when winning" in {
+      sniper.currentPrice(123, 45, FromSniper())
+      sniper.auctionClosed()
+      got {
+        atLeast(0)(sniperListener).sniperWinning()
+        atLeastOne(sniperListener).sniperWon()
+      }
+    }
   }
 }

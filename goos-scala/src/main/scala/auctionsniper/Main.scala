@@ -117,6 +117,8 @@ class Main {
         def run() { window.foreach(_.showStatus(status))}
       })
     }
+
+    def sniperWon() {}
   }
 }
 
