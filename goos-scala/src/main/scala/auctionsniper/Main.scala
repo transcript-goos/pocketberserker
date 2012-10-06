@@ -103,7 +103,7 @@ class Main {
     def sniperStateChanged(snapshot: SniperSnapshot) {
       SwingUtilities.invokeLater(new Runnable {
         def run() {
-          window.foreach(_.sniperStateChanged(snapshot, MainWindow.STATUS_BIDDING))
+          window.foreach(_.sniperStateChanged(snapshot))
         }
       })
     }
