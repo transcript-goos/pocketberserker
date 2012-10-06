@@ -118,7 +118,9 @@ class Main {
       })
     }
 
-    def sniperWon() {}
+    def sniperWon() {
+      showStatus(MainWindow.STATUS_WON)
+    }
   }
 }
 
