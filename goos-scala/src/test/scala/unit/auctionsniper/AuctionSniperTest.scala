@@ -5,11 +5,17 @@ import org.specs2.mock.Mockito
 import auctionsniper._
 import auctionsniper.FromSniper
 
+object AuctionSniperTest {
+  val ITEM_ID: String = "item-id"
+}
+
 class AuctionSniperTest extends Specification with Mockito {
+
+  import AuctionSniperTest._
 
   private val sniperListener = mock[SniperListener]
   private val auction = mock[Auction]
-  private val sniper = new AuctionSniper(auction, sniperListener)
+  private val sniper = new AuctionSniper(ITEM_ID, auction, sniperListener)
 
   "AuctionSniper" should {
     "reports lost if auction closes immediately" in {
@@ -20,9 +26,11 @@ class AuctionSniperTest extends Specification with Mockito {
     "bids higher and reports bidding when new price arrives" in {
       val price = 1001
       val increment = 25
+      val bid = price + increment
+
       sniper.currentPrice(price, increment, FromOtherBidder())
-      there was one(auction).bid(price + increment)
-      there was atLeastOne(sniperListener).sniperBidding()
+      there was one(auction).bid(bid)
+      there was atLeastOne(sniperListener).sniperBidding(SniperState(ITEM_ID, price, bid))
     }
 
     "reports is winning when current price comes from sniper" in {
@@ -34,7 +42,7 @@ class AuctionSniperTest extends Specification with Mockito {
       sniper.currentPrice(123, 45, FromOtherBidder())
       sniper.auctionClosed()
       got {
-        atLeast(0)(sniperListener).sniperBidding()
+        atLeast(0)(sniperListener).sniperBidding(any[SniperState])
         atLeastOne(sniperListener).sniperLost()
       }
     }

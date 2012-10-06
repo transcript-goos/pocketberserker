@@ -1,6 +1,6 @@
 package auctionsniper
 
-class AuctionSniper(private val auction: Auction, private val sniperListener: SniperListener)
+class AuctionSniper(private val itemId: String, private val auction: Auction, private val sniperListener: SniperListener)
   extends AuctionEventListener {
 
   private var isWinning = false
@@ -20,8 +20,9 @@ class AuctionSniper(private val auction: Auction, private val sniperListener: Sn
     if (isWinning) {
       sniperListener.sniperWinning()
     } else {
-        auction.bid(price + increment)
-        sniperListener.sniperBidding()
+      val bid = price + increment
+      auction.bid(price + increment)
+      sniperListener.sniperBidding(new SniperState(itemId, price, bid))
     }
   }
 }

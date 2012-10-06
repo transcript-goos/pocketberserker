@@ -64,7 +64,7 @@ class Main {
     chat.addMessageListener(
       new AuctionMessageTranslator(
         "",
-        new AuctionSniper(auction, new SniperStateDisplayer()))
+        new AuctionSniper(itemId, auction, new SniperStateDisplayer()))
     )
     auction.join()
   }
@@ -100,7 +100,7 @@ class Main {
 
   class SniperStateDisplayer extends SniperListener {
 
-    def sniperBidding() {
+    def sniperBidding(sniperState: SniperState) {
       showStatus(MainWindow.STATUS_BIDDING)
     }
 
