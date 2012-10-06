@@ -8,15 +8,16 @@ object ApplicationRunner {
 
 class ApplicationRunner {
 
-
   import auctionsniper._
   import ui.MainWindow
   import ui.MainWindow._
   import ApplicationRunner._
 
   private var driver : Option[AuctionSniperDriver] = None
+  private var itemId : Option[String] = None
 
   def startBiddingIn(auction: FakeAuctionServer) {
+    itemId = Some(auction.itemId)
     val thread = new Thread("Test Application") {
       override def run() {
         try {
@@ -41,15 +42,19 @@ class ApplicationRunner {
     driver.foreach(_.dispose())
   }
 
-  def hasShownSniperIsBidding() {
-    driver.foreach(_.showsSniperStatus(MainWindow.STATUS_BIDDING))
+  def hasShownSniperIsBidding(lastPrice: Int, lastBid: Int) {
+    for(d <- driver; id <- itemId)
+      d.showsSniperStatus(id, lastPrice, lastBid, MainWindow.STATUS_BIDDING)
   }
 
-  def hasShownSniperIsWinning() {
-    driver.foreach(_.showsSniperStatus(MainWindow.STATUS_WINNING))
+  def hasShownSniperIsWinning(winningBid: Int) {
+    for(d <- driver; id <- itemId)
+      d.showsSniperStatus(id, winningBid, winningBid, MainWindow.STATUS_WINNING)
   }
 
-  def showsSniperHasWonAcution() {
-    driver.foreach(_.showsSniperStatus(MainWindow.STATUS_WON))
+  def showsSniperHasWonAcution(lastPrice: Int) {
+    for(d <- driver; id <- itemId)
+      d.showsSniperStatus(id, lastPrice, lastPrice, MainWindow.STATUS_WON)
   }
 }
+
