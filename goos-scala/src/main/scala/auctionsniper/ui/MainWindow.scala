@@ -10,6 +10,7 @@ object MainWindow {
   val STATUS_LOST = "Lost"
   val STATUS_BIDDING = "Bidding"
   val STATUS_WINNING = "Winning"
+  val STATUS_WON = "Won"
   val MAIN_WINDOW_NAME = "Auction Sniper Main"
   val SNIPER_STATUS_NAME = "sniper status"
 

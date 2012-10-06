@@ -8,6 +8,7 @@ object ApplicationRunner {
 
 class ApplicationRunner {
 
+
   import auctionsniper._
   import ui.MainWindow
   import ui.MainWindow._
@@ -42,5 +43,13 @@ class ApplicationRunner {
 
   def hasShownSniperIsBidding() {
     driver.foreach(_.showsSniperStatus(MainWindow.STATUS_BIDDING))
+  }
+
+  def hasShownSniperIsWinning() {
+    driver.foreach(_.showsSniperStatus(MainWindow.STATUS_WINNING))
+  }
+
+  def showsSniperHasWonAcution() {
+    driver.foreach(_.showsSniperStatus(MainWindow.STATUS_WON))
   }
 }
