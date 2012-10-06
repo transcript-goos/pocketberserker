@@ -3,6 +3,7 @@ package auctionsniper.ui
 import javax.swing.{JScrollPane, JTable, JLabel, JFrame}
 import javax.swing.border.LineBorder
 import java.awt.{BorderLayout, Color}
+import auctionsniper.SniperState
 
 object MainWindow {
 
@@ -42,6 +43,10 @@ class MainWindow extends JFrame("Auction Sniper") {
 
   def showStatusText(statusText: String) {
     snipers.setStatusText(statusText)
+  }
+
+  def sniperStatusChanged(sniperState: SniperState, statusText: String) {
+    snipers.sniperStatusChanged(sniperState, statusText)
   }
 }
 

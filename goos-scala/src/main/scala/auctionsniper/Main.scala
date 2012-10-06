@@ -100,8 +100,12 @@ class Main {
 
   class SniperStateDisplayer extends SniperListener {
 
-    def sniperBidding(sniperState: SniperState) {
-      showStatus(MainWindow.STATUS_BIDDING)
+    def sniperBidding(state: SniperState) {
+      SwingUtilities.invokeLater(new Runnable {
+        def run() {
+          window.foreach(_.sniperStatusChanged(state, MainWindow.STATUS_BIDDING))
+        }
+      })
     }
 
     def sniperLost() {
