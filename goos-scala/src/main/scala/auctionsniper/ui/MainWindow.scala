@@ -45,8 +45,8 @@ class MainWindow extends JFrame("Auction Sniper") {
     snipers.setStatusText(statusText)
   }
 
-  def sniperStatusChanged(sniperSnapshot: SniperSnapshot, statusText: String) {
-    snipers.sniperStatusChanged(sniperSnapshot, statusText)
+  def sniperStateChanged(sniperSnapshot: SniperSnapshot, statusText: String) {
+    snipers.sniperStateChanged(sniperSnapshot, statusText)
   }
 }
 

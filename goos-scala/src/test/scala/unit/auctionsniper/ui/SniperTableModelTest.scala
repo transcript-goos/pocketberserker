@@ -23,14 +23,14 @@ class SniperTableModelTest extends Specification{
     }
 
     "sets sniper values in columns" in new mock {
-      model.sniperStatusChanged(SniperSnapshot("item id", 555, 666), MainWindow.STATUS_BIDDING)
+      model.sniperStateChanged(SniperSnapshot("item id", 555, 666), MainWindow.STATUS_BIDDING)
 
       there was one(listener).tableChanged(anArgThat(aRowChangedEvent))
 
       assertColumnEquals(Column.ITEM_IDENTIFIER, "item id")
       assertColumnEquals(Column.LAST_PRICE, 555)
       assertColumnEquals(Column.LAST_BID, 666)
-      assertColumnEquals(Column.SNIPER_STATUS, MainWindow.STATUS_BIDDING)
+      assertColumnEquals(Column.SNIPER_STATE, MainWindow.STATUS_BIDDING)
     }
   }
 
