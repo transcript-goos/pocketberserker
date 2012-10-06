@@ -114,7 +114,7 @@ class Main {
 
     private def showStatus(status: String) {
       SwingUtilities.invokeLater(new Runnable {
-        def run() { window.foreach(_.showStatus(status))}
+        def run() { window.foreach(_.showStatusText(status))}
       })
     }
 
