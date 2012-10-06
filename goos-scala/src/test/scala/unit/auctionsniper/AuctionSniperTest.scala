@@ -3,7 +3,8 @@ package unit.auctionsniper
 import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
 import auctionsniper._
-import auctionsniper.FromSniper
+import org.hamcrest.{FeatureMatcher, CoreMatchers}
+import auctionsniper.SniperState.BIDDING
 
 object AuctionSniperTest {
   val ITEM_ID: String = "item-id"
@@ -42,7 +43,7 @@ class AuctionSniperTest extends Specification with Mockito {
       sniper.currentPrice(123, 45, FromOtherBidder())
       sniper.auctionClosed()
       got {
-        atLeast(0)(sniperListener).sniperStateChanged(any[SniperSnapshot])
+        atLeast(0)(sniperListener).sniperStateChanged(anArgThat(aSniperThatIs(BIDDING)))
         atLeastOne(sniperListener).sniperLost()
       }
     }
@@ -56,4 +57,13 @@ class AuctionSniperTest extends Specification with Mockito {
       }
     }
   }
+
+  private def aSniperThatIs(state: SniperState) = {
+    new FeatureMatcher[SniperSnapshot, SniperState](
+      CoreMatchers.equalTo(state), "sniper that is", "was") {
+      def featureValueOf(actual: SniperSnapshot) =
+          actual.state
+    }
+  }
 }
+
