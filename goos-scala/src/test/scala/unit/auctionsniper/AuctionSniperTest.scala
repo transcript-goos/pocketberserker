@@ -30,7 +30,7 @@ class AuctionSniperTest extends Specification with Mockito {
 
       sniper.currentPrice(price, increment, FromOtherBidder())
       there was one(auction).bid(bid)
-      there was atLeastOne(sniperListener).sniperStateChanged(SniperSnapshot(ITEM_ID, price, bid))
+      there was atLeastOne(sniperListener).sniperStateChanged(SniperSnapshot(ITEM_ID, price, bid, SniperState.BIDDING))
     }
 
     "reports is winning when current price comes from sniper" in {

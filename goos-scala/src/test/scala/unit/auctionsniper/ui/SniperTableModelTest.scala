@@ -5,7 +5,7 @@ import org.specs2.mock.Mockito
 import javax.swing.event.{TableModelEvent, TableModelListener}
 import auctionsniper.ui.{MainWindow, Column, SnipersTableModel}
 import org.specs2.specification.BeforeExample
-import auctionsniper.SniperSnapshot
+import auctionsniper.{SniperState, SniperSnapshot}
 import org.hamcrest.Matchers
 
 class SniperTableModelTest extends Specification{
@@ -23,7 +23,7 @@ class SniperTableModelTest extends Specification{
     }
 
     "sets sniper values in columns" in new mock {
-      model.sniperStateChanged(SniperSnapshot("item id", 555, 666), MainWindow.STATUS_BIDDING)
+      model.sniperStateChanged(SniperSnapshot("item id", 555, 666, SniperState.BIDDING), MainWindow.STATUS_BIDDING)
 
       there was one(listener).tableChanged(anArgThat(aRowChangedEvent))
 
