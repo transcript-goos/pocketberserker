@@ -1,11 +1,11 @@
 package auctionsniper.ui
 
 import javax.swing.table.AbstractTableModel
-import auctionsniper.SniperState
+import auctionsniper.SniperSnapshot
 import auctionsniper.ui.Column.{SNIPER_STATUS, LAST_BID, LAST_PRICE, ITEM_IDENTIFIER}
 
 object SnipersTableModel {
-  private val STARTING_UP = SniperState("", 0, 0)
+  private val STARTING_UP = SniperSnapshot("", 0, 0)
 }
 
 class SnipersTableModel extends AbstractTableModel {
@@ -31,8 +31,8 @@ class SnipersTableModel extends AbstractTableModel {
     fireTableRowsUpdated(0, 0)
   }
 
-  def sniperStatusChanged(newSniperState: SniperState, newStatusText: String) {
-    sniperState = newSniperState
+  def sniperStatusChanged(newSniperSnapshot: SniperSnapshot, newStatusText: String) {
+    sniperState = newSniperSnapshot
     statusText = newStatusText
     fireTableRowsUpdated(0, 0)
   }
