@@ -3,20 +3,21 @@ package unit.auctionsniper.xmpp
 import org.specs2.mutable._
 import org.jivesoftware.smack.Chat
 import org.jivesoftware.smack.packet.Message
-import auctionsniper.AuctionEventListener
+import auctionsniper.{FromSniper, FromOtherBidder, AuctionEventListener}
 import org.specs2.mock.Mockito
 import auctionsniper.xmpp.AuctionMessageTranslator
 
 object AuctionMessageTranslatorTest {
   val UNUSED_CHAT : Chat = null
+  val SNIPER_ID = "sniper id"
 }
 
 class AuctionMessageTranslatorTest extends Specification with Mockito {
 
-  import AuctionMessageTranslatorTest.UNUSED_CHAT
+  import AuctionMessageTranslatorTest._
 
   val listener = mock[AuctionEventListener]
-  val translator = new AuctionMessageTranslator(listener)
+  val translator = new AuctionMessageTranslator(SNIPER_ID, listener)
 
   "AuctionMessageTransLator" should {
 
@@ -30,7 +31,7 @@ class AuctionMessageTranslatorTest extends Specification with Mockito {
       there was one(listener).auctionClosed()
     }
 
-    "nofities bid details when current price message received" in {
+    "nofities bid details when current price message received from other bidder" in {
 
       val message = new Message()
       message.setBody(
@@ -39,7 +40,19 @@ class AuctionMessageTranslatorTest extends Specification with Mockito {
 
       translator.processMessage(UNUSED_CHAT, message)
 
-      there was one(listener).currentPrice(192, 7)
+      there was one(listener).currentPrice(192, 7, FromOtherBidder())
+    }
+
+    "notifies bid details when current price message received from sniper" in {
+
+      val message = new Message()
+      message.setBody(
+        "SOLVersion: 1.1; Event: PRICE; CurrentPrice: 234; Increment: 5; Bidder: " + SNIPER_ID + ";"
+      )
+
+      translator.processMessage(UNUSED_CHAT, message)
+
+      there was one(listener).currentPrice(234, 5, FromSniper())
     }
   }
 }

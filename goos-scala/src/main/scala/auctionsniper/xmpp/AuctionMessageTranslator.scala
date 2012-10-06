@@ -2,16 +2,18 @@ package auctionsniper.xmpp
 
 import org.jivesoftware.smack.{Chat, MessageListener}
 import org.jivesoftware.smack.packet.Message
-import auctionsniper.AuctionEventListener
+import auctionsniper.{FromOtherBidder, FromSniper, AuctionEventListener}
 
-class AuctionMessageTranslator(private val listener: AuctionEventListener) extends MessageListener {
+class AuctionMessageTranslator(
+  private val sniperId: String,
+  private val listener: AuctionEventListener) extends MessageListener {
 
   def processMessage(chat: Chat, message: Message) {
     val event = AuctionEvent.from(message.getBody)
     event.eventType match {
       case Close() => listener.auctionClosed()
       case Price(currentPrice, increment) =>
-        listener.currentPrice(currentPrice, increment)
+        listener.currentPrice(currentPrice, increment, event.isFrom(sniperId))
     }
   }
 
@@ -23,6 +25,11 @@ class AuctionMessageTranslator(private val listener: AuctionEventListener) exten
         case "PRICE" => Price(fields("CurrentPrice").toInt, fields("Increment").toInt)
         case other => throw new Exception("Missing value for" + other)
       }
+
+    def isFrom(sniperId: String) =
+      if(sniperId.equals(bidder)) FromSniper() else FromOtherBidder()
+
+    def bidder = fields("Bidder")
   }
 
   private object AuctionEvent {
