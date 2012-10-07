@@ -31,7 +31,10 @@ class ApplicationRunner {
     }
     thread.setDaemon(true)
     thread.start()
+
     val d = new AuctionSniperDriver(1000)
+    d.hasTitle(MainWindow.APPLICATION_TITLE)
+    d.hasColumnTitles()
     d.showsSniperStatus(SnipersTableModel.textFor(SniperState.JOINNING))
     driver = Some(d)
   }
