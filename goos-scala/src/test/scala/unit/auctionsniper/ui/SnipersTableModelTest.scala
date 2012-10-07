@@ -19,11 +19,11 @@ class SnipersTableModelTest extends Specification {
   }
 
   "SniperTableModel" should {
-    "has enough columns" in {
+    "have enough columns" in {
       model.getColumnCount must_== Column.values.length
     }
 
-    "sets sniper values in columns" in new mock {
+    "set sniper values in columns" in new mock {
       model.sniperStateChanged(SniperSnapshot("item id", 555, 666, SniperState.BIDDING))
 
       there was one(listener).tableChanged(anArgThat(aRowChangedEvent))

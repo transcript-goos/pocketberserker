@@ -22,12 +22,12 @@ class AuctionSniperTest extends Specification {
   }
 
   "AuctionSniper" should {
-    "reports lost if auction closes immediately" in new mock {
+    "report lost if auction closes immediately" in new mock {
       sniper.auctionClosed()
       there was atLeastOne(sniperListener).sniperStateChanged(anArgThat(aSniperThatIs(LOST)))
     }
 
-    "bids higher and reports bidding when new price arrives" in new mock {
+    "bid higher and report bidding when new price arrives" in new mock {
       val price = 1001
       val increment = 25
       val bid = price + increment
@@ -39,7 +39,7 @@ class AuctionSniperTest extends Specification {
       }
     }
 
-    "reports is winning when current price comes from sniper" in new mock {
+    "report is winning when current price comes from sniper" in new mock {
       sniper.currentPrice(123, 12, FromOtherBidder())
       sniper.currentPrice(135, 45, FromSniper())
       got {
@@ -50,7 +50,7 @@ class AuctionSniperTest extends Specification {
       }
     }
 
-    "reports lost if auction closes when bidding" in new mock {
+    "report lost if auction closes when bidding" in new mock {
       sniper.currentPrice(123, 45, FromOtherBidder())
       sniper.auctionClosed()
       got {

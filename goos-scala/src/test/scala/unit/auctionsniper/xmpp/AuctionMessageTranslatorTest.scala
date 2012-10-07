@@ -21,7 +21,7 @@ class AuctionMessageTranslatorTest extends Specification with Mockito {
 
   "AuctionMessageTransLator" should {
 
-    "nofities auction closed when close message received" in {
+    "nofity auction closed when close message received" in {
 
       val message = new Message()
       message.setBody("SOLVersion: 1.1; Event: CLOSE;")
@@ -31,7 +31,7 @@ class AuctionMessageTranslatorTest extends Specification with Mockito {
       there was one(listener).auctionClosed()
     }
 
-    "nofities bid details when current price message received from other bidder" in {
+    "nofitiy bid details when current price message received from other bidder" in {
 
       val message = new Message()
       message.setBody(
@@ -43,7 +43,7 @@ class AuctionMessageTranslatorTest extends Specification with Mockito {
       there was one(listener).currentPrice(192, 7, FromOtherBidder())
     }
 
-    "notifies bid details when current price message received from sniper" in {
+    "notifiy bid details when current price message received from sniper" in {
 
       val message = new Message()
       message.setBody(
