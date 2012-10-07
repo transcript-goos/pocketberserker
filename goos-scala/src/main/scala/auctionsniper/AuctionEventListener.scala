@@ -1,8 +1,8 @@
 package auctionsniper
 
 trait AuctionEventListener {
-  def auctionClosed() : Unit
-  def currentPrice(price: Int, increment: Int, priceSource: PriceSource) : Unit
+  def auctionClosed()
+  def currentPrice(price: Int, increment: Int, priceSource: PriceSource)
 }
 
 trait PriceSource {}
