@@ -28,11 +28,6 @@ class SnipersTableModel extends AbstractTableModel {
     }
   }
 
-  def setStatusText(newStatusText: String) {
-    statusText = newStatusText
-    fireTableRowsUpdated(0, 0)
-  }
-
   def sniperStateChanged(newSnapshot: SniperSnapshot) {
     sniperState = newSnapshot
     statusText = STATUS_TEXT(newSnapshot.state.ordinal)

@@ -107,24 +107,6 @@ class Main {
         }
       })
     }
-
-    def sniperLost() {
-      showStatus(MainWindow.STATUS_LOST)
-    }
-
-    def sniperWinning() {
-      showStatus(MainWindow.STATUS_WINNING)
-    }
-
-    private def showStatus(status: String) {
-      SwingUtilities.invokeLater(new Runnable {
-        def run() { window.foreach(_.showStatusText(status))}
-      })
-    }
-
-    def sniperWon() {
-      showStatus(MainWindow.STATUS_WON)
-    }
   }
 }
 
