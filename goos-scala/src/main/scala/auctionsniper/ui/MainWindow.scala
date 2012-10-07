@@ -7,11 +7,12 @@ import auctionsniper.SniperSnapshot
 object MainWindow {
   val MAIN_WINDOW_NAME = "Auction Sniper Main"
   val SNIPERS_TABLE_NAME = "Sniper Table"
+  val APPLICATION_TITLE = "Auction Sniper"
 }
 
-class MainWindow(val snipers: SnipersTableModel) extends JFrame("Auction Sniper") {
+import MainWindow._
 
-  import MainWindow._
+class MainWindow(val snipers: SnipersTableModel) extends JFrame(APPLICATION_TITLE) {
 
   setName(MAIN_WINDOW_NAME)
   fillContentPane(makeSnipersTable())
