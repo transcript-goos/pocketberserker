@@ -1,5 +1,7 @@
 package end2end.auctionsniper
 
+import auctionsniper.ui.SnipersTableModel
+
 object ApplicationRunner {
   val SNIPER_ID = "sniper"
   val SNIPER_PASSWORD = "sniper"
@@ -30,12 +32,12 @@ class ApplicationRunner {
     thread.setDaemon(true)
     thread.start()
     val d = new AuctionSniperDriver(1000)
-    d.showsSniperStatus(STATUS_JOINING)
+    d.showsSniperStatus(SnipersTableModel.textFor(SniperState.JOINNING))
     driver = Some(d)
   }
 
   def showsSniperHasLostAcution() {
-    driver.foreach(_.showsSniperStatus(STATUS_LOST))
+    driver.foreach(_.showsSniperStatus(SnipersTableModel.textFor(SniperState.LOST)))
   }
 
   def stop() {
@@ -44,17 +46,17 @@ class ApplicationRunner {
 
   def hasShownSniperIsBidding(lastPrice: Int, lastBid: Int) {
     for(d <- driver; id <- itemId)
-      d.showsSniperStatus(id, lastPrice, lastBid, MainWindow.STATUS_BIDDING)
+      d.showsSniperStatus(id, lastPrice, lastBid, SnipersTableModel.textFor(SniperState.BIDDING))
   }
 
   def hasShownSniperIsWinning(winningBid: Int) {
     for(d <- driver; id <- itemId)
-      d.showsSniperStatus(id, winningBid, winningBid, MainWindow.STATUS_WINNING)
+      d.showsSniperStatus(id, winningBid, winningBid, SnipersTableModel.textFor(SniperState.WINNING))
   }
 
   def showsSniperHasWonAcution(lastPrice: Int) {
     for(d <- driver; id <- itemId)
-      d.showsSniperStatus(id, lastPrice, lastPrice, MainWindow.STATUS_WON)
+      d.showsSniperStatus(id, lastPrice, lastPrice, SnipersTableModel.textFor(SniperState.WON))
   }
 }
 
