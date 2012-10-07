@@ -1,8 +1,7 @@
 package auctionsniper.ui
 
 import javax.swing.{JScrollPane, JTable, JLabel, JFrame}
-import javax.swing.border.LineBorder
-import java.awt.{BorderLayout, Color}
+import java.awt.BorderLayout
 import auctionsniper.SniperSnapshot
 
 object MainWindow {
@@ -10,11 +9,9 @@ object MainWindow {
   val SNIPERS_TABLE_NAME = "Sniper Table"
 }
 
-class MainWindow extends JFrame("Auction Sniper") {
+class MainWindow(val snipers: SnipersTableModel) extends JFrame("Auction Sniper") {
 
   import MainWindow._
-
-  private val snipers = new SnipersTableModel()
 
   setName(MAIN_WINDOW_NAME)
   fillContentPane(makeSnipersTable())
@@ -33,10 +30,6 @@ class MainWindow extends JFrame("Auction Sniper") {
     val snipersTable = new JTable(snipers)
     snipersTable.setName(SNIPERS_TABLE_NAME)
     snipersTable
-  }
-
-  def sniperStateChanged(snapshot: SniperSnapshot) {
-    snipers.sniperStateChanged(snapshot)
   }
 }
 

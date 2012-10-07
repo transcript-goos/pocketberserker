@@ -3,6 +3,7 @@ package auctionsniper
 import javax.swing.SwingUtilities
 import org.jivesoftware.smack.{XMPPException, Chat, XMPPConnection}
 import java.awt.event.{WindowEvent, WindowAdapter}
+import ui.SnipersTableModel
 
 object Main {
   val BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %d;"
@@ -39,6 +40,7 @@ class Main {
   import xmpp.AuctionMessageTranslator
 
   private var window : Option[MainWindow] = None
+  private val snipers = new SnipersTableModel
 
   @SuppressWarnings(Array("unused"))
   private var notToBeGCd : Option[Chat] = None
@@ -48,7 +50,7 @@ class Main {
   private def startUserInterface() {
     SwingUtilities.invokeAndWait(new Runnable {
       def run() {
-        window = Some(new MainWindow())
+        window = Some(new MainWindow(snipers))
       }
     })
   }
@@ -63,8 +65,8 @@ class Main {
     val auction = new XMPPAuction(chat)
     chat.addMessageListener(
       new AuctionMessageTranslator(
-        "",
-        new AuctionSniper(itemId, auction, new SniperStateDisplayer()))
+        connection.getUser,
+        new AuctionSniper(itemId, auction, new SwingThreadSniperListener(snipers)))
     )
     auction.join()
   }
@@ -98,12 +100,12 @@ class Main {
     }
   }
 
-  class SniperStateDisplayer extends SniperListener {
+  class SwingThreadSniperListener(val delegate: SniperListener) extends SniperListener {
 
     def sniperStateChanged(snapshot: SniperSnapshot) {
       SwingUtilities.invokeLater(new Runnable {
         def run() {
-          window.foreach(_.sniperStateChanged(snapshot))
+          delegate.sniperStateChanged(snapshot)
         }
       })
     }
