@@ -1,8 +1,7 @@
 package auctionsniper.ui
 
-import javax.swing.{JScrollPane, JTable, JLabel, JFrame}
+import javax.swing.{JScrollPane, JTable, JFrame}
 import java.awt.BorderLayout
-import auctionsniper.SniperSnapshot
 
 object MainWindow {
   val MAIN_WINDOW_NAME = "Auction Sniper Main"

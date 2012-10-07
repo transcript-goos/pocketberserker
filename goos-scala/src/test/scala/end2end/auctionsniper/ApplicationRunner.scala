@@ -12,7 +12,6 @@ class ApplicationRunner {
 
   import auctionsniper._
   import ui.MainWindow
-  import ui.MainWindow._
   import ApplicationRunner._
 
   private var driver : Option[AuctionSniperDriver] = None
