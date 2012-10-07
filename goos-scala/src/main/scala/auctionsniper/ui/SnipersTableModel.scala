@@ -6,7 +6,8 @@ import auctionsniper.ui.Column.{SNIPER_STATE, LAST_BID, LAST_PRICE, ITEM_IDENTIF
 
 object SnipersTableModel {
   private val STARTING_UP = SniperSnapshot("", 0, 0, SniperState.JOINNING)
-  private val STATUS_TEXT = Array(MainWindow.STATUS_JOINING, MainWindow.STATUS_BIDDING)
+  private val STATUS_TEXT = Array(MainWindow.STATUS_JOINING,
+    MainWindow.STATUS_BIDDING, MainWindow.STATUS_WINNING)
 }
 
 class SnipersTableModel extends AbstractTableModel {

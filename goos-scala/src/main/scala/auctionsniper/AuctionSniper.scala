@@ -4,6 +4,7 @@ class AuctionSniper(private val itemId: String, private val auction: Auction, pr
   extends AuctionEventListener {
 
   private var isWinning = false
+  private var snapshot = SniperSnapshot.joining(itemId)
 
   def auctionClosed() {
     if (isWinning) {
@@ -18,11 +19,12 @@ class AuctionSniper(private val itemId: String, private val auction: Auction, pr
       case FromOtherBidder() => false
     }
     if (isWinning) {
-      sniperListener.sniperWinning()
+      snapshot = snapshot.winning(price)
     } else {
       val bid = price + increment
       auction.bid(price + increment)
-      sniperListener.sniperStateChanged(new SniperSnapshot(itemId, price, bid, SniperState.BIDDING))
+      snapshot = snapshot.bidding(price, bid)
     }
+    sniperListener.sniperStateChanged(snapshot)
   }
 }
