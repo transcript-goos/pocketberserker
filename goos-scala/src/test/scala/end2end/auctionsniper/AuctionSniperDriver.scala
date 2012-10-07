@@ -20,7 +20,7 @@ class AuctionSniperDriver(val timeoutMillis: Int)
     new JTableDriver(this).hasCell(JLabelTextMatcher.withLabelText(equalTo(statusText)))
   }
 
-  implicit def showsSniperStatus(itemId: String, lastPrice: Int, lastBid: Int, statusText: String) {
+  def showsSniperStatus(itemId: String, lastPrice: Int, lastBid: Int, statusText: String) {
     val table = new JTableDriver(this)
     table.hasRow(
       IterableComponentsMatcher.matching(
