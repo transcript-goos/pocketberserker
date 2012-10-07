@@ -9,7 +9,7 @@ import org.hamcrest.Matchers
 import org.specs2.matcher.DataTables
 import auctionsniper.ui.Column.{SNIPER_STATE, LAST_BID, LAST_PRICE, ITEM_IDENTIFIER}
 
-class SniperTableModelTest extends Specification {
+class SnipersTableModelTest extends Specification {
 
   private val model = new SnipersTableModel()
 
