@@ -25,8 +25,8 @@ class AuctionSniperDriver(val timeoutMillis: Int)
     table.hasRow(
       IterableComponentsMatcher.matching(
         JLabelTextMatcher.withLabelText(itemId),
-        JLabelTextMatcher.withLabelText(lastPrice.toString()),
-        JLabelTextMatcher.withLabelText(lastBid.toString()),
+        JLabelTextMatcher.withLabelText(lastPrice.toString),
+        JLabelTextMatcher.withLabelText(lastBid.toString),
         JLabelTextMatcher.withLabelText(statusText)))
   }
 
