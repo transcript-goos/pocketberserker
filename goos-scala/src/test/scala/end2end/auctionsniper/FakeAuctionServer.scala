@@ -3,7 +3,7 @@ package end2end.auctionsniper
 import org.jivesoftware.smack.{MessageListener, Chat, ChatManagerListener, XMPPConnection}
 import org.jivesoftware.smack.packet.Message
 import java.util.concurrent.{TimeUnit, ArrayBlockingQueue}
-import org.specs2.matcher.{JUnitMustMatchers, Matcher}
+import org.specs2.matcher.{MustMatchers, Matcher}
 import auctionsniper.Main
 
 object FakeAuctionServer {
@@ -13,7 +13,7 @@ object FakeAuctionServer {
   private val AUCTION_PASSWORD = "auction"
 }
 
-class FakeAuctionServer(val itemId: String) extends JUnitMustMatchers {
+class FakeAuctionServer(val itemId: String) extends MustMatchers {
 
   import FakeAuctionServer._
 
