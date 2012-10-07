@@ -16,21 +16,21 @@ class SnipersTableModel extends AbstractTableModel {
 
   import SnipersTableModel._
 
-  private var sniperState = STARTING_UP
+  private var snapshot = STARTING_UP
 
   def getRowCount = 1
   def getColumnCount = Column.values.length
   def getValueAt(rowIndex: Int, columnIndex: Int) = {
     Column.at(columnIndex) match {
-      case ITEM_IDENTIFIER => sniperState.itemId
-      case LAST_PRICE => sniperState.lastPrice.asInstanceOf[Object]
-      case LAST_BID => sniperState.lastBid.asInstanceOf[Object]
-      case SNIPER_STATE => textFor(sniperState.state)
+      case ITEM_IDENTIFIER => snapshot.itemId
+      case LAST_PRICE => snapshot.lastPrice.asInstanceOf[Object]
+      case LAST_BID => snapshot.lastBid.asInstanceOf[Object]
+      case SNIPER_STATE => textFor(snapshot.state)
     }
   }
 
   def sniperStateChanged(newSnapshot: SniperSnapshot) {
-    sniperState = newSnapshot
+    snapshot = newSnapshot
     fireTableRowsUpdated(0, 0)
   }
 }
