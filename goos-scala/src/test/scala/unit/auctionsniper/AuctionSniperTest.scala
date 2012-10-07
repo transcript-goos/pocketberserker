@@ -4,7 +4,7 @@ import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
 import auctionsniper._
 import org.hamcrest.{FeatureMatcher, CoreMatchers}
-import auctionsniper.SniperState.{WINNING, BIDDING}
+import auctionsniper.SniperState.{WON, LOST, WINNING, BIDDING}
 import org.specs2.specification.Scope
 
 object AuctionSniperTest {
@@ -24,7 +24,7 @@ class AuctionSniperTest extends Specification {
   "AuctionSniper" should {
     "reports lost if auction closes immediately" in new mock {
       sniper.auctionClosed()
-      there was atLeastOne(sniperListener).sniperLost()
+      there was atLeastOne(sniperListener).sniperStateChanged(anArgThat(aSniperThatIs(LOST)))
     }
 
     "bids higher and reports bidding when new price arrives" in new mock {
@@ -55,7 +55,7 @@ class AuctionSniperTest extends Specification {
       sniper.auctionClosed()
       got {
         atLeast(0)(sniperListener).sniperStateChanged(anArgThat(aSniperThatIs(BIDDING)))
-        atLeastOne(sniperListener).sniperLost()
+        atLeastOne(sniperListener).sniperStateChanged(anArgThat(aSniperThatIs(LOST)))
       }
     }
 
@@ -64,7 +64,7 @@ class AuctionSniperTest extends Specification {
       sniper.auctionClosed()
       got {
         atLeast(0)(sniperListener).sniperStateChanged(anArgThat(aSniperThatIs(WINNING)))
-        atLeastOne(sniperListener).sniperWon()
+        atLeastOne(sniperListener).sniperStateChanged(anArgThat(aSniperThatIs(WON)))
       }
     }
   }
