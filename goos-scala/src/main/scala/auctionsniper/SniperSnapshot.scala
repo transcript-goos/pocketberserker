@@ -1,7 +1,5 @@
 package auctionsniper
 
-import com.objogate.exception.Defect
-
 case class SniperSnapshot (
   val itemId: String,
   val lastPrice: Int,
@@ -13,13 +11,7 @@ case class SniperSnapshot (
 
   def winning(newLastPrice: Int) = copy(lastPrice = newLastPrice, state = SniperState.WINNING)
 
-  def closed() = {
-    state match {
-      case SniperState.WINNING => copy(state = SniperState.WON)
-      case SniperState.WON | SniperState.LOST => throw new Defect("Auction is already closed")
-      case _ =>copy(state = SniperState.LOST)
-    }
-  }
+  def closed() = copy(state = state.whenAuctionClosed)
 }
 
 object SniperSnapshot {
