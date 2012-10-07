@@ -3,12 +3,13 @@ package unit.auctionsniper.ui
 import org.specs2.mutable.{Before, Specification}
 import org.specs2.mock.Mockito
 import javax.swing.event.{TableModelEvent, TableModelListener}
-import auctionsniper.ui.{MainWindow, Column, SnipersTableModel}
-import org.specs2.specification.BeforeExample
+import auctionsniper.ui.{Column, SnipersTableModel}
 import auctionsniper.{SniperState, SniperSnapshot}
 import org.hamcrest.Matchers
+import org.specs2.matcher.DataTables
+import auctionsniper.ui.Column.{SNIPER_STATE, LAST_BID, LAST_PRICE, ITEM_IDENTIFIER}
 
-class SniperTableModelTest extends Specification{
+class SniperTableModelTest extends Specification {
 
   private val model = new SnipersTableModel()
 
@@ -31,6 +32,12 @@ class SniperTableModelTest extends Specification{
       assertColumnEquals(Column.LAST_PRICE, 555)
       assertColumnEquals(Column.LAST_BID, 666)
       assertColumnEquals(Column.SNIPER_STATE, SnipersTableModel.textFor(SniperState.BIDDING))
+    }
+
+    "set columns headings" in new mock {
+      foreach(Column.values) {
+        (column: Column) => model.getColumnName(column.ordinal) must_== column.name
+      }
     }
   }
 
