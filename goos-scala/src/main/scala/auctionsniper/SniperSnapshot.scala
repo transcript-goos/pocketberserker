@@ -1,10 +1,10 @@
 package auctionsniper
 
 case class SniperSnapshot (
-  val itemId: String,
-  val lastPrice: Int,
-  val lastBid: Int,
-  val state: SniperState) {
+  itemId: String,
+  lastPrice: Int,
+  lastBid: Int,
+  state: SniperState) {
 
   def bidding(newLastPrice: Int, newLastBid: Int) =
     copy(lastPrice = newLastPrice, lastBid = newLastBid, state = SniperState.BIDDING)
