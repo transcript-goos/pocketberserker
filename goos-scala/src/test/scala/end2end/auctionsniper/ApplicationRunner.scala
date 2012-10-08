@@ -15,10 +15,8 @@ class ApplicationRunner {
   import ApplicationRunner._
 
   private var driver : Option[AuctionSniperDriver] = None
-  private var itemId : Option[String] = None
 
   def startBiddingIn(auction: FakeAuctionServer) {
-    itemId = Some(auction.itemId)
     val thread = new Thread("Test Application") {
       override def run() {
         try {
@@ -46,19 +44,19 @@ class ApplicationRunner {
     driver.foreach(_.dispose())
   }
 
-  def hasShownSniperIsBidding(lastPrice: Int, lastBid: Int) {
-    for(d <- driver; id <- itemId)
-      d.showsSniperStatus(id, lastPrice, lastBid, SnipersTableModel.textFor(SniperState.BIDDING))
+  def hasShownSniperIsBidding(auction: FakeAuctionServer, lastPrice: Int, lastBid: Int) {
+    driver.foreach(
+      _.showsSniperStatus(auction.itemId, lastPrice, lastBid, SnipersTableModel.textFor(SniperState.BIDDING)))
   }
 
-  def hasShownSniperIsWinning(winningBid: Int) {
-    for(d <- driver; id <- itemId)
-      d.showsSniperStatus(id, winningBid, winningBid, SnipersTableModel.textFor(SniperState.WINNING))
+  def hasShownSniperIsWinning(auction: FakeAuctionServer, winningBid: Int) {
+    driver.foreach(
+      _.showsSniperStatus(auction.itemId, winningBid, winningBid, SnipersTableModel.textFor(SniperState.WINNING)))
   }
 
-  def showsSniperHasWonAcution(lastPrice: Int) {
-    for(d <- driver; id <- itemId)
-      d.showsSniperStatus(id, lastPrice, lastPrice, SnipersTableModel.textFor(SniperState.WON))
+  def showsSniperHasWonAcution(auction: FakeAuctionServer, lastPrice: Int) {
+    driver.foreach(
+      _.showsSniperStatus(auction.itemId, lastPrice, lastPrice, SnipersTableModel.textFor(SniperState.WON)))
   }
 }
 
