@@ -8,9 +8,11 @@ class AuctionSniperEndToEndTest extends Specification {
 
   trait after extends After {
     val auction = new FakeAuctionServer("item-54321")
+    val auction2 = new FakeAuctionServer("item-65432")
     val application = new ApplicationRunner()
     def after {
       auction.stop()
+      auction2.stop()
       application.stop()
     }
   }
@@ -56,6 +58,33 @@ class AuctionSniperEndToEndTest extends Specification {
 
       auction.announceClosed()
       application.showsSniperHasWonAcution(auction, 1098)
+    }
+
+    "bid for multiple items" in new after {
+      auction.startSellingItem()
+      auction2.startSellingItem()
+
+      application.startBiddingIn(auction, auction2)
+      auction.hasReceivedJoinRequestFrom(ApplicationRunner.SNIPER_XMPP_ID)
+      auction2.hasReceivedJoinRequestFrom(ApplicationRunner.SNIPER_XMPP_ID)
+
+      auction.reportPrice(1000, 98, "other bidder")
+      auction.hasReceivedBid(1098, ApplicationRunner.SNIPER_XMPP_ID)
+
+      auction2.reportPrice(500, 21, "other bidder")
+      auction2.hasReceivedBid(521, ApplicationRunner.SNIPER_XMPP_ID)
+
+      auction.reportPrice(1098, 97, ApplicationRunner.SNIPER_XMPP_ID)
+      auction2.reportPrice(521, 22, ApplicationRunner.SNIPER_XMPP_ID)
+
+      application.hasShownSniperIsWinning(auction, 1098)
+      application.hasShownSniperIsWinning(auction2, 521)
+
+      auction.announceClosed()
+      auction2.announceClosed()
+
+      application.showsSniperHasWonAcution(auction, 1098)
+      application.showsSniperHasWonAcution(auction2, 521)
     }
   }
 }
