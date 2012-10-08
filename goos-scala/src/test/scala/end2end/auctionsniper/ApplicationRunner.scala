@@ -6,6 +6,14 @@ object ApplicationRunner {
   val SNIPER_ID = "sniper"
   val SNIPER_PASSWORD = "sniper"
   val SNIPER_XMPP_ID = SNIPER_ID + "@" + FakeAuctionServer.XMPP_HOSTNAME + "/Auction"
+
+  def arguments(auctions: Seq[FakeAuctionServer]) = {
+    Array(
+      FakeAuctionServer.XMPP_HOSTNAME,
+      SNIPER_ID,
+      SNIPER_PASSWORD
+    ) ++ auctions.map(_.itemId)
+  }
 }
 
 class ApplicationRunner {
@@ -16,11 +24,11 @@ class ApplicationRunner {
 
   private var driver : Option[AuctionSniperDriver] = None
 
-  def startBiddingIn(auction: FakeAuctionServer) {
+  def startBiddingIn(auctions: FakeAuctionServer*) {
     val thread = new Thread("Test Application") {
       override def run() {
         try {
-          Main.main(Array(FakeAuctionServer.XMPP_HOSTNAME, SNIPER_ID, SNIPER_PASSWORD, auction.itemId))
+          Main.main(arguments(auctions))
         } catch {
           case e: Exception => e.printStackTrace()
         }
@@ -32,7 +40,9 @@ class ApplicationRunner {
     val d = new AuctionSniperDriver(1000)
     d.hasTitle(MainWindow.APPLICATION_TITLE)
     d.hasColumnTitles()
-    d.showsSniperStatus(SnipersTableModel.textFor(SniperState.JOINNING))
+    auctions.foreach{ (auction: FakeAuctionServer) =>
+      d.showsSniperStatus(auction.itemId, 0, 0, SnipersTableModel.textFor(SniperState.JOINNING))
+    }
     driver = Some(d)
   }
 
