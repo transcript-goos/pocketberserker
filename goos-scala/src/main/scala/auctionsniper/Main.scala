@@ -19,7 +19,13 @@ object Main {
 
   def main(args: Array[String]) {
     val main = new Main()
-    main.joinAuction(connection(args(ARG_HOSTNAME), args(ARG_USERNAME), args(ARG_PASSWORD)), args(ARG_ITEM_ID))
+    val connection = this.connection(args(ARG_HOSTNAME), args(ARG_USERNAME), args(ARG_PASSWORD))
+    main.disconnectWhenUICloses(connection)
+
+    args.zipWithIndex
+      .filter{case (_, i) => i > ARG_PASSWORD}.map(_._1).foreach(
+        main.joinAuction(connection, _)
+    )
   }
 
   private def connection(hostname: String, username: String, password: String) = {
@@ -38,12 +44,12 @@ class Main {
   import Main._
   import ui.MainWindow
   import xmpp.AuctionMessageTranslator
+  import scala.collection.mutable.ListBuffer
 
   private var window : Option[MainWindow] = None
   private val snipers = new SnipersTableModel
 
-  @SuppressWarnings(Array("unused"))
-  private var notToBeGCd : Option[Chat] = None
+  private val notToBeGCd = new ListBuffer[Chat]
 
   startUserInterface()
 
@@ -57,10 +63,8 @@ class Main {
 
   private def joinAuction(connection: XMPPConnection, itemId: String) {
 
-    disconnectWhenUICloses(connection)
-
     val chat = connection.getChatManager.createChat(auctionId(itemId, connection), null)
-    notToBeGCd = Some(chat)
+    notToBeGCd += chat
 
     val auction = new XMPPAuction(chat)
     chat.addMessageListener(
