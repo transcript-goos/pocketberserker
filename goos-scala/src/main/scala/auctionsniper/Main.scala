@@ -4,6 +4,7 @@ import javax.swing.SwingUtilities
 import org.jivesoftware.smack.{XMPPException, Chat, XMPPConnection}
 import java.awt.event.{WindowEvent, WindowAdapter}
 import ui.SnipersTableModel
+import util.Announcer
 
 object Main {
   val BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %d;"
@@ -72,14 +73,18 @@ class Main {
         def joinAuction(itemId: String) {
           snipers += SniperSnapshot.joining(itemId)
           val chat = connection.getChatManager.createChat(auctionId(itemId, connection), null)
+          val auctionEventListeners = Announcer.to[AuctionEventListener]
+          chat.addMessageListener(
+            new AuctionMessageTranslator(
+              connection.getUser,
+              auctionEventListeners.announce()
+            )
+          )
           notToBeGCd += chat
 
           val auction = new XMPPAuction(chat)
-          chat.addMessageListener(
-            new AuctionMessageTranslator(connection.getUser,
-            new AuctionSniper(itemId, auction,
-              new SwingThreadSniperListener(snipers)))
-          )
+          auctionEventListeners += new AuctionSniper(
+            itemId, auction, new SwingThreadSniperListener(snipers))
           auction.join()
         }
       }
