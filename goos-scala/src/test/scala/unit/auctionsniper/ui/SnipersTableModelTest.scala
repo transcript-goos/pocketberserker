@@ -67,15 +67,6 @@ class SnipersTableModelTest extends Specification {
     }
   }
 
-  private def assertColumnEquals(column: Column, expected: Any) {
-    val rowIndex = 0
-    val columnIndex = column.ordinal
-    model.getValueAt(rowIndex, columnIndex) must_== expected
-  }
-
-  private def aRowChangedEvent =
-    Matchers.samePropertyValuesAs(new TableModelEvent(model, 0))
-
   private def assertRowMatchesSnapshot(row: Int, snapshot: SniperSnapshot) {
     cellValue(row, Column.ITEM_IDENTIFIER) must_== snapshot.itemId
     cellValue(row, Column.LAST_PRICE) must_== snapshot.lastPrice
