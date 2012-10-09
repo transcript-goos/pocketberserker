@@ -21,11 +21,7 @@ object Main {
     val main = new Main()
     val connection = this.connection(args(ARG_HOSTNAME), args(ARG_USERNAME), args(ARG_PASSWORD))
     main.disconnectWhenUICloses(connection)
-
-    args.zipWithIndex
-      .filter{case (_, i) => i > ARG_PASSWORD}.map(_._1).foreach(
-        main.joinAuction(connection, _)
-    )
+    main.addUserRequestListenerFor(connection)
   }
 
   private def connection(hostname: String, username: String, password: String) = {
@@ -61,22 +57,6 @@ class Main {
     })
   }
 
-  private def joinAuction(connection: XMPPConnection, itemId: String) {
-
-    safelyAddItemToModel(itemId)
-
-    val chat = connection.getChatManager.createChat(auctionId(itemId, connection), null)
-    notToBeGCd += chat
-
-    val auction = new XMPPAuction(chat)
-    chat.addMessageListener(
-      new AuctionMessageTranslator(
-        connection.getUser,
-        new AuctionSniper(itemId, auction, new SwingThreadSniperListener(snipers)))
-    )
-    auction.join()
-  }
-
   private def disconnectWhenUICloses(connection: XMPPConnection) {
     window.foreach(
       _.addWindowListener(new WindowAdapter {
@@ -87,12 +67,24 @@ class Main {
     )
   }
 
-  private def safelyAddItemToModel(itemId: String) {
-    SwingUtilities.invokeAndWait(new Runnable {
-      def run() {
-        snipers.addSniper(SniperSnapshot.joining(itemId))
-      }
-    })
+  private def addUserRequestListenerFor(connection: XMPPConnection) {
+    window.foreach(
+      _.addUserRequestListener(new UserRequestListener {
+        def joinAuction(itemId: String) {
+          snipers.addSniper(SniperSnapshot.joining(itemId))
+          val chat = connection.getChatManager.createChat(auctionId(itemId, connection), null)
+          notToBeGCd += chat
+
+          val auction = new XMPPAuction(chat)
+          chat.addMessageListener(
+            new AuctionMessageTranslator(connection.getUser,
+            new AuctionSniper(itemId, auction,
+              new SwingThreadSniperListener(snipers)))
+          )
+          auction.join()
+        }
+      })
+    )
   }
 
   class XMPPAuction(private val chat: Chat) extends Auction {
