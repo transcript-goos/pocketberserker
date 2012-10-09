@@ -63,6 +63,8 @@ class Main {
 
   private def joinAuction(connection: XMPPConnection, itemId: String) {
 
+    safelyAddItemToModel(itemId)
+
     val chat = connection.getChatManager.createChat(auctionId(itemId, connection), null)
     notToBeGCd += chat
 
@@ -83,6 +85,14 @@ class Main {
         }
       })
     )
+  }
+
+  private def safelyAddItemToModel(itemId: String) {
+    SwingUtilities.invokeAndWait(new Runnable {
+      def run() {
+        snipers.addSniper(SniperSnapshot.joining(itemId))
+      }
+    })
   }
 
   class XMPPAuction(private val chat: Chat) extends Auction {
