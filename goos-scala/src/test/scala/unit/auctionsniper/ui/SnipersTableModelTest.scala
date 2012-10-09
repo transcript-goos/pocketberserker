@@ -4,10 +4,8 @@ import org.specs2.mutable.{Before, Specification}
 import org.specs2.mock.Mockito
 import javax.swing.event.{TableModelEvent, TableModelListener}
 import auctionsniper.ui.{Column, SnipersTableModel}
-import auctionsniper.{SniperState, SniperSnapshot}
+import auctionsniper.SniperSnapshot
 import org.hamcrest.Matchers
-import org.specs2.matcher.DataTables
-import auctionsniper.ui.Column.{SNIPER_STATE, LAST_BID, LAST_PRICE, ITEM_IDENTIFIER}
 
 class SnipersTableModelTest extends Specification {
 
@@ -24,20 +22,39 @@ class SnipersTableModelTest extends Specification {
     }
 
     "set sniper values in columns" in new mock {
-      model.sniperStateChanged(SniperSnapshot("item id", 555, 666, SniperState.BIDDING))
 
-      there was one(listener).tableChanged(anArgThat(aRowChangedEvent))
+      val joining = SniperSnapshot.joining("item-id")
+      val bidding = joining.bidding(555, 666)
 
-      assertColumnEquals(Column.ITEM_IDENTIFIER, "item id")
-      assertColumnEquals(Column.LAST_PRICE, 555)
-      assertColumnEquals(Column.LAST_BID, 666)
-      assertColumnEquals(Column.SNIPER_STATE, SnipersTableModel.textFor(SniperState.BIDDING))
+      model.addSniper(joining)
+      model.sniperStateChanged(bidding)
+
+      assertRowMatchesSnapshot(0, bidding)
+
+      got {
+        atLeast(0)(listener).tableChanged(anArgThat(anyInsertionEvent))
+        one(listener).tableChanged(anArgThat(aChangeInRow(0)))
+      }
     }
 
     "set columns headings" in new mock {
       foreach(Column.values) {
         (column: Column) => model.getColumnName(column.ordinal) must_== column.name
       }
+    }
+
+    "notify listeners when adding a sniper" in new mock {
+
+      val joining = SniperSnapshot.joining("item123")
+
+      model.getRowCount must_== 0
+
+      model.addSniper(joining)
+
+      model.getRowCount must_== 1
+      assertRowMatchesSnapshot(0, joining)
+
+      there was one(listener).tableChanged(anArgThat(anInsertionAtRow(0)))
     }
   }
 
@@ -47,7 +64,26 @@ class SnipersTableModelTest extends Specification {
     model.getValueAt(rowIndex, columnIndex) must_== expected
   }
 
-  def aRowChangedEvent =
+  private def aRowChangedEvent =
     Matchers.samePropertyValuesAs(new TableModelEvent(model, 0))
+
+  private def assertRowMatchesSnapshot(row: Int, snapshot: SniperSnapshot) {
+    cellValue(row, Column.ITEM_IDENTIFIER) must_== snapshot.itemId
+    cellValue(row, Column.LAST_PRICE) must_== snapshot.lastPrice
+    cellValue(row, Column.LAST_BID) must_== snapshot.lastBid
+    cellValue(row, Column.SNIPER_STATE) must_== snapshot.state
+  }
+
+  private def cellValue(rowIndex: Int, column: Column) =
+    model.getValueAt(rowIndex, column.ordinal)
+
+  private def anyInsertionEvent =
+    Matchers.hasProperty("type", Matchers.equalTo(TableModelEvent.INSERT))
+
+  private def anInsertionAtRow(row: Int) =
+    Matchers.samePropertyValuesAs(new TableModelEvent(model, row, row, TableModelEvent.ALL_COLUMNS, TableModelEvent.INSERT))
+
+  private def aChangeInRow(row: Int) =
+    Matchers.samePropertyValuesAs(new TableModelEvent(model, row))
 }
 
