@@ -5,9 +5,8 @@ import org.jivesoftware.smack.{XMPPException, XMPPConnection}
 import auctionsniper.util.Announcer
 
 object XMPPAuction {
-  val AUCTION_RESOURCE = "Auction"
   val ITEM_ID_AS_LOGIN = "auction-%s"
-  val AUCTION_ID_FORMAT = ITEM_ID_AS_LOGIN + "@%s/" + AUCTION_RESOURCE
+  val AUCTION_ID_FORMAT = ITEM_ID_AS_LOGIN + "@%s/" + XMPPAuctionHouse.AUCTION_RESOURCE
   val JOIN_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %d;"
   val BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %d;"
 

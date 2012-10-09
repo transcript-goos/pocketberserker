@@ -1,10 +1,9 @@
 package auctionsniper
 
 import javax.swing.SwingUtilities
-import org.jivesoftware.smack.XMPPConnection
 import java.awt.event.{WindowEvent, WindowAdapter}
 import ui.SnipersTableModel
-import xmpp.XMPPAuction
+import xmpp.XMPPAuctionHouse
 
 object Main {
   private val ARG_HOSTNAME = 0
@@ -13,16 +12,9 @@ object Main {
 
   def main(args: Array[String]) {
     val main = new Main()
-    val connection = this.connection(args(ARG_HOSTNAME), args(ARG_USERNAME), args(ARG_PASSWORD))
-    main.disconnectWhenUICloses(connection)
-    main.addUserRequestListenerFor(connection)
-  }
-
-  private def connection(hostname: String, username: String, password: String) = {
-    val connection = new XMPPConnection(hostname)
-    connection.connect()
-    connection.login(username, password, XMPPAuction.AUCTION_RESOURCE)
-    connection
+    val auctionHouse = XMPPAuctionHouse.connect(args(ARG_HOSTNAME), args(ARG_USERNAME), args(ARG_PASSWORD))
+    main.disconnectWhenUICloses(auctionHouse)
+    main.addUserRequestListenerFor(auctionHouse)
   }
 }
 
@@ -46,22 +38,22 @@ class Main {
     })
   }
 
-  private def disconnectWhenUICloses(connection: XMPPConnection) {
+  private def disconnectWhenUICloses(auctionHouse: XMPPAuctionHouse) {
     window.foreach(
       _.addWindowListener(new WindowAdapter {
         override def windowClosed(e: WindowEvent) {
-          connection.disconnect()
+          auctionHouse.disconnect()
         }
       })
     )
   }
 
-  private def addUserRequestListenerFor(connection: XMPPConnection) {
+  private def addUserRequestListenerFor(auctionHouse: AuctionHouse) {
     window.foreach(
       _ += new UserRequestListener {
         def joinAuction(itemId: String) {
           snipers += SniperSnapshot.joining(itemId)
-          val auction = new XMPPAuction(connection, itemId)
+          val auction = auctionHouse.auctionFor(itemId)
           notToBeGCd += auction
           auction += new AuctionSniper(
             itemId, auction, new SwingThreadSniperListener(snipers))
