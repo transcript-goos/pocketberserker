@@ -17,13 +17,11 @@ class MainWindowTest extends Specification {
     "make user request when join button clicked" in new tearDown {
       val buttonProbs = new ValueMatcherProbe[String](Matchers.equalTo("an item-id"), "join request")
 
-      mainWindow.addUserRequestListener(
-        new UserRequestListener {
+      mainWindow += new UserRequestListener {
           def joinAuction(itemId: String) {
             buttonProbs.setReceivedValue(itemId)
           }
         }
-      )
 
       driver.startBiddingFor("an item-id")
       driver.check(buttonProbs)

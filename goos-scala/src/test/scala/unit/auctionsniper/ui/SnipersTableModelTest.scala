@@ -27,7 +27,7 @@ class SnipersTableModelTest extends Specification {
       val joining = SniperSnapshot.joining("item-id")
       val bidding = joining.bidding(555, 666)
 
-      model.addSniper(joining)
+      model += joining
       model.sniperStateChanged(bidding)
 
       assertRowMatchesSnapshot(0, bidding)
@@ -50,7 +50,7 @@ class SnipersTableModelTest extends Specification {
 
       model.getRowCount must_== 0
 
-      model.addSniper(joining)
+      model += joining
 
       model.getRowCount must_== 1
       assertRowMatchesSnapshot(0, joining)
@@ -59,8 +59,8 @@ class SnipersTableModelTest extends Specification {
     }
 
     "hold snipers in addition order" in new mock {
-      model.addSniper(SniperSnapshot.joining("item 0"))
-      model.addSniper(SniperSnapshot.joining("item 1"))
+      model += SniperSnapshot.joining("item 0")
+      model += SniperSnapshot.joining("item 1")
 
       cellValue(0, Column.ITEM_IDENTIFIER) must_== "item 0"
       cellValue(1, Column.ITEM_IDENTIFIER) must_== "item 1"

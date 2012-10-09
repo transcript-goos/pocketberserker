@@ -32,7 +32,7 @@ class SnipersTableModel extends AbstractTableModel with SniperListener {
   override def getColumnName(column: Int) =
     Column.at(column).name
 
-  def addSniper(snapshot: SniperSnapshot) {
+  def +=(snapshot: SniperSnapshot) {
     snapshots += snapshot
     fireTableRowsInserted(snapshots.size - 1, snapshots.size - 1)
   }

@@ -69,9 +69,9 @@ class Main {
 
   private def addUserRequestListenerFor(connection: XMPPConnection) {
     window.foreach(
-      _.addUserRequestListener(new UserRequestListener {
+      _ += new UserRequestListener {
         def joinAuction(itemId: String) {
-          snipers.addSniper(SniperSnapshot.joining(itemId))
+          snipers += SniperSnapshot.joining(itemId)
           val chat = connection.getChatManager.createChat(auctionId(itemId, connection), null)
           notToBeGCd += chat
 
@@ -83,7 +83,7 @@ class Main {
           )
           auction.join()
         }
-      })
+      }
     )
   }
 

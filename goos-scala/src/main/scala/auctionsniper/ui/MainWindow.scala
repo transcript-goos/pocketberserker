@@ -59,7 +59,7 @@ class MainWindow(val snipers: SnipersTableModel) extends JFrame(APPLICATION_TITL
     controls
   }
 
-  def addUserRequestListener(listener: UserRequestListener) {
+  def +=(listener: UserRequestListener) {
     userRequests += listener
   }
 }
