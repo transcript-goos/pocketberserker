@@ -8,6 +8,7 @@ import auctionsniper.SniperSnapshot
 import org.hamcrest.Matchers
 
 class SnipersTableModelTest extends Specification {
+  isolated
 
   private val model = new SnipersTableModel()
 
@@ -56,6 +57,14 @@ class SnipersTableModelTest extends Specification {
 
       there was one(listener).tableChanged(anArgThat(anInsertionAtRow(0)))
     }
+
+    "hold snipers in addition order" in new mock {
+      model.addSniper(SniperSnapshot.joining("item 0"))
+      model.addSniper(SniperSnapshot.joining("item 1"))
+
+      cellValue(0, Column.ITEM_IDENTIFIER) must_== "item 0"
+      cellValue(1, Column.ITEM_IDENTIFIER) must_== "item 1"
+    }
   }
 
   private def assertColumnEquals(column: Column, expected: Any) {
@@ -71,7 +80,7 @@ class SnipersTableModelTest extends Specification {
     cellValue(row, Column.ITEM_IDENTIFIER) must_== snapshot.itemId
     cellValue(row, Column.LAST_PRICE) must_== snapshot.lastPrice
     cellValue(row, Column.LAST_BID) must_== snapshot.lastBid
-    cellValue(row, Column.SNIPER_STATE) must_== snapshot.state
+    cellValue(row, Column.SNIPER_STATE) must_== SnipersTableModel.textFor(snapshot.state)
   }
 
   private def cellValue(rowIndex: Int, column: Column) =

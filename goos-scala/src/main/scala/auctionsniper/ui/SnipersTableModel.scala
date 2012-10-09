@@ -2,9 +2,10 @@ package auctionsniper.ui
 
 import javax.swing.table.AbstractTableModel
 import auctionsniper.{SniperListener, SniperState, SniperSnapshot}
+import collection.mutable.ArrayBuffer
+import com.objogate.exception.Defect
 
 object SnipersTableModel {
-  private val STARTING_UP = SniperSnapshot("", 0, 0, SniperState.JOINNING)
   private val STATUS_TEXT = Array("Joinning",
     "Bidding", "Winning", "Lost", "Won")
 
@@ -13,24 +14,35 @@ object SnipersTableModel {
 
 class SnipersTableModel extends AbstractTableModel with SniperListener {
 
-  import SnipersTableModel._
+  private var snapshots = new ArrayBuffer[SniperSnapshot]
 
-  private var snapshot = STARTING_UP
+  def getRowCount = snapshots.size
 
-  def getRowCount = 1
-
-  def getColumnCount = Column.values.length
+  def getColumnCount = Column.values.size
 
   def getValueAt(rowIndex: Int, columnIndex: Int) =
-    Column.at(columnIndex).valueIn(snapshot)
+    Column.at(columnIndex).valueIn(snapshots(rowIndex))
 
   def sniperStateChanged(newSnapshot: SniperSnapshot) {
-    snapshot = newSnapshot
-    fireTableRowsUpdated(0, 0)
+    val row = rowMatching(newSnapshot)
+    snapshots.update(row, newSnapshot)
+    fireTableRowsUpdated(row, row)
   }
 
   override def getColumnName(column: Int) =
     Column.at(column).name
 
-  def addSniper(snapshot: SniperSnapshot) {}
+  def addSniper(snapshot: SniperSnapshot) {
+    snapshots += snapshot
+    fireTableRowsInserted(snapshots.size - 1, snapshots.size - 1)
+  }
+
+  private def rowMatching(snapshot: SniperSnapshot) : Int = {
+    snapshots.zipWithIndex.find{
+      case (s: SniperSnapshot, _: Int) => snapshot.isForSameItemAs(s)
+    } match {
+      case Some((_, i)) => i
+      case None => throw new Defect("Cannot find match for " + snapshot)
+    }
+  }
 }
