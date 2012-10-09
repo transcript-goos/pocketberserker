@@ -5,6 +5,7 @@ import org.jivesoftware.smack.packet.Message
 import java.util.concurrent.{TimeUnit, ArrayBlockingQueue}
 import org.specs2.matcher.{MustMatchers, Matcher}
 import auctionsniper.Main
+import auctionsniper.xmpp.XMPPAuction
 
 object FakeAuctionServer {
   val ITEM_ID_AS_LOGIN = "auction-%s"
@@ -35,7 +36,7 @@ class FakeAuctionServer(val itemId: String) extends MustMatchers {
   }
 
   def hasReceivedJoinRequestFrom(sniperId: String) {
-    receivesAMessageMatching(sniperId, equalTo(Main.JOIN_COMMAND_FORMAT))
+    receivesAMessageMatching(sniperId, equalTo(XMPPAuction.JOIN_COMMAND_FORMAT))
   }
 
   def announceClosed() {
@@ -55,7 +56,7 @@ class FakeAuctionServer(val itemId: String) extends MustMatchers {
 
   def hasReceivedBid(bid: Int, sniperId: String) {
     receivesAMessageMatching(sniperId,
-      equalTo(Main.JOIN_COMMAND_FORMAT.format(bid)))
+      equalTo(XMPPAuction.JOIN_COMMAND_FORMAT.format(bid)))
   }
 
   def receivesAMessageMatching[T >: String](sniperId: String, messageMatcher: Matcher[T]) {
