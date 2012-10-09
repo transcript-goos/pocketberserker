@@ -3,6 +3,8 @@ package auctionsniper.ui
 import javax.swing._
 import java.awt.{FlowLayout, BorderLayout}
 import auctionsniper.UserRequestListener
+import auctionsniper.util.Announcer
+import java.awt.event.{ActionEvent, ActionListener}
 
 object MainWindow {
   val MAIN_WINDOW_NAME = "Auction Sniper Main"
@@ -15,6 +17,8 @@ object MainWindow {
 import MainWindow._
 
 class MainWindow(val snipers: SnipersTableModel) extends JFrame(APPLICATION_TITLE) {
+
+  private val userRequests = Announcer.to[UserRequestListener]
 
   setName(MAIN_WINDOW_NAME)
   fillContentPane(makeSnipersTable(), makeControls())
@@ -45,11 +49,18 @@ class MainWindow(val snipers: SnipersTableModel) extends JFrame(APPLICATION_TITL
 
     val joinAuctionButton = new JButton("Join Auction")
     joinAuctionButton.setName(JOIN_BUTTON_NAME)
+    joinAuctionButton.addActionListener(new ActionListener {
+      def actionPerformed(e: ActionEvent) {
+        userRequests.announce().joinAuction(itemIdField.getText)
+      }
+    })
     controls.add(joinAuctionButton)
 
     controls
   }
 
-  def addUserRequestListener(listener: UserRequestListener) {}
+  def addUserRequestListener(listener: UserRequestListener) {
+    userRequests += listener
+  }
 }
 
