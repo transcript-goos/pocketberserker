@@ -7,6 +7,8 @@ object MainWindow {
   val MAIN_WINDOW_NAME = "Auction Sniper Main"
   val SNIPERS_TABLE_NAME = "Sniper Table"
   val APPLICATION_TITLE = "Auction Sniper"
+  val NEW_ITEM_ID_NAME = "item id"
+  val JOIN_BUTTON_NAME = "Join Auction"
 }
 
 import MainWindow._
