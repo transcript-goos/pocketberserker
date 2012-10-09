@@ -2,6 +2,7 @@ package auctionsniper.ui
 
 import javax.swing._
 import java.awt.{FlowLayout, BorderLayout}
+import auctionsniper.UserRequestListener
 
 object MainWindow {
   val MAIN_WINDOW_NAME = "Auction Sniper Main"
@@ -48,5 +49,7 @@ class MainWindow(val snipers: SnipersTableModel) extends JFrame(APPLICATION_TITL
 
     controls
   }
+
+  def addUserRequestListener(listener: UserRequestListener) {}
 }
 
