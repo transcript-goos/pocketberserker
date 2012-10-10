@@ -13,7 +13,7 @@ object SnipersTableModel {
   def textFor(state: SniperState) = STATUS_TEXT(state.ordinal)
 }
 
-class SnipersTableModel extends AbstractTableModel with SniperListener with SniperCollector {
+class SnipersTableModel extends AbstractTableModel with SniperListener with SniperCollector with PortfolioListener {
 
   private val snapshots = new ArrayBuffer[SniperSnapshot]
   private val notToBeGCd = new ArrayBuffer[AuctionSniper]
@@ -58,5 +58,9 @@ class SnipersTableModel extends AbstractTableModel with SniperListener with Snip
     snapshots += sniperSnapshot
     val row = snapshots.size - 1
     fireTableRowsInserted(row, row)
+  }
+
+  def sniperAdded(sniper: AuctionSniper) {
+    this += sniper
   }
 }

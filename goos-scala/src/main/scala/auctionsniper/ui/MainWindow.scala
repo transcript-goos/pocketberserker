@@ -2,7 +2,7 @@ package auctionsniper.ui
 
 import javax.swing._
 import java.awt.{FlowLayout, BorderLayout}
-import auctionsniper.UserRequestListener
+import auctionsniper.{SniperPortfolio, UserRequestListener}
 import auctionsniper.util.Announcer
 import java.awt.event.{ActionEvent, ActionListener}
 
@@ -16,12 +16,12 @@ object MainWindow {
 
 import MainWindow._
 
-class MainWindow(val snipers: SnipersTableModel) extends JFrame(APPLICATION_TITLE) {
+class MainWindow(val portfolio: SniperPortfolio) extends JFrame(APPLICATION_TITLE) {
 
   private val userRequests = Announcer.to[UserRequestListener]
 
   setName(MAIN_WINDOW_NAME)
-  fillContentPane(makeSnipersTable(), makeControls())
+  fillContentPane(makeSnipersTable(portfolio), makeControls())
   pack()
   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
   setVisible(true)
@@ -34,8 +34,10 @@ class MainWindow(val snipers: SnipersTableModel) extends JFrame(APPLICATION_TITL
     contentPane.add(new JScrollPane(snipersTable), BorderLayout.CENTER)
   }
 
-  private def makeSnipersTable() = {
-    val snipersTable = new JTable(snipers)
+  private def makeSnipersTable(portfolio: SniperPortfolio) = {
+    val model = new SnipersTableModel()
+    portfolio += model
+    val snipersTable = new JTable(model)
     snipersTable.setName(SNIPERS_TABLE_NAME)
     snipersTable
   }

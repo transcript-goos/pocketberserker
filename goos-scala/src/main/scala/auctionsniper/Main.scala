@@ -2,7 +2,6 @@ package auctionsniper
 
 import javax.swing.SwingUtilities
 import java.awt.event.{WindowEvent, WindowAdapter}
-import ui.SnipersTableModel
 import xmpp.XMPPAuctionHouse
 
 object Main {
@@ -23,14 +22,14 @@ class Main {
   import ui.MainWindow
 
   private var window : Option[MainWindow] = None
-  private val snipers = new SnipersTableModel
+  private val portfolio = new SniperPortfolio
 
   startUserInterface()
 
   private def startUserInterface() {
     SwingUtilities.invokeAndWait(new Runnable {
       def run() {
-        window = Some(new MainWindow(snipers))
+        window = Some(new MainWindow(portfolio))
       }
     })
   }
@@ -46,7 +45,7 @@ class Main {
   }
 
   private def addUserRequestListenerFor(auctionHouse: AuctionHouse) {
-    window.foreach( _ += new SniperLauncher(auctionHouse, snipers))
+    window.foreach( _ += new SniperLauncher(auctionHouse, portfolio))
   }
 }
 
