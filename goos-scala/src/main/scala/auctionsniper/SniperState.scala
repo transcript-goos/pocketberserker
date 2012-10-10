@@ -9,6 +9,7 @@ sealed class SniperState(val ordinal: Int) {
 }
 
 object SniperState {
+
   object JOINNING extends SniperState(0) {
     override def whenAuctionClosed = LOST
   }
@@ -23,5 +24,6 @@ object SniperState {
   }
   object LOST extends SniperState(4)
   object WON extends SniperState(5)
+  object FAILED extends SniperState(6)
 }
 

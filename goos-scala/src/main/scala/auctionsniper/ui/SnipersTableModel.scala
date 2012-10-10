@@ -8,7 +8,7 @@ import scala.Some
 
 object SnipersTableModel {
   private val STATUS_TEXT = Array("Joinning",
-    "Bidding", "Winning", "Losing", "Lost", "Won")
+    "Bidding", "Winning", "Losing", "Lost", "Won", "Failed")
 
   def textFor(state: SniperState) = STATUS_TEXT(state.ordinal)
 }

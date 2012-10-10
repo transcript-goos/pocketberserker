@@ -87,5 +87,12 @@ class ApplicationRunner {
       d.showsSniperStatus(itemId, 0, 0, SnipersTableModel.textFor(SniperState.JOINNING))
     }
   }
+
+  def showsSniperHasFailed(auction: FakeAuctionServer) {
+    driver.foreach(
+      _.showsSniperStatus(auction.itemId, 0, 0, SnipersTableModel.textFor(SniperState.FAILED)))
+  }
+
+  def reportsInvalidMessage(auction: FakeAuctionServer, brokenMessage: String) {}
 }
 

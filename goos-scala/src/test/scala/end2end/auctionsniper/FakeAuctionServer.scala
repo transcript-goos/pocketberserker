@@ -79,5 +79,9 @@ class FakeAuctionServer(val itemId: String) extends MustMatchers {
       body must messageMatcher
     }
   }
+
+  def sendInvalidMessageContaining(brokenMessage: String) {
+    currentChat.foreach(_.sendMessage(brokenMessage))
+  }
 }
 

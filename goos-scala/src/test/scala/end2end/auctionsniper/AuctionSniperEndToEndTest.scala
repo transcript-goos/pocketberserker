@@ -10,10 +10,17 @@ class AuctionSniperEndToEndTest extends Specification {
     val auction = new FakeAuctionServer("item-54321")
     val auction2 = new FakeAuctionServer("item-65432")
     val application = new ApplicationRunner()
+
     def after {
       auction.stop()
       auction2.stop()
       application.stop()
+    }
+
+    def waitForAnotherAuctionEvent() {
+      auction2.hasReceivedJoinRequestFrom(ApplicationRunner.SNIPER_XMPP_ID)
+      auction2.reportPrice(600, 6, "other bidder")
+      application.hasShownSniperIsBidding(auction2, 600, 606)
     }
   }
 
@@ -104,6 +111,27 @@ class AuctionSniperEndToEndTest extends Specification {
 
       auction.announceClosed()
       application.showsSniperHasLostAcution(auction, 1207, 1098)
+    }
+
+    "report invalid auction message and stop responding to events" in new after {
+      val brokenMessage = "a broken mesage"
+      auction.startSellingItem()
+      auction2.startSellingItem()
+
+      application.startBiddingIn(auction, auction2)
+      auction.hasReceivedJoinRequestFrom(ApplicationRunner.SNIPER_XMPP_ID)
+
+      auction.reportPrice(500, 20, "other bidder")
+      auction.hasReceivedBid(520, ApplicationRunner.SNIPER_XMPP_ID)
+
+      auction.sendInvalidMessageContaining(brokenMessage)
+      application.showsSniperHasFailed(auction)
+
+      auction.reportPrice(520, 21, "other bidder")
+      waitForAnotherAuctionEvent()
+
+      application.reportsInvalidMessage(auction, brokenMessage)
+      application.showsSniperHasFailed(auction)
     }
   }
 }
