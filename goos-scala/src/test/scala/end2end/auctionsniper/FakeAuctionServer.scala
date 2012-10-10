@@ -4,7 +4,6 @@ import org.jivesoftware.smack.{MessageListener, Chat, ChatManagerListener, XMPPC
 import org.jivesoftware.smack.packet.Message
 import java.util.concurrent.{TimeUnit, ArrayBlockingQueue}
 import org.specs2.matcher.{MustMatchers, Matcher}
-import auctionsniper.Main
 import auctionsniper.xmpp.XMPPAuction
 
 object FakeAuctionServer {
