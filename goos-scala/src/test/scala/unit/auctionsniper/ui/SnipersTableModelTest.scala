@@ -4,7 +4,7 @@ import org.specs2.mutable.{Before, Specification}
 import org.specs2.mock.Mockito
 import javax.swing.event.{TableModelEvent, TableModelListener}
 import auctionsniper.ui.{Column, SnipersTableModel}
-import auctionsniper.SniperSnapshot
+import auctionsniper.{AuctionSniper, Auction, SniperSnapshot}
 import org.hamcrest.Matchers
 
 class SnipersTableModelTest extends Specification {
@@ -14,6 +14,9 @@ class SnipersTableModelTest extends Specification {
 
   trait mock extends Mockito with Before {
     val listener = mock[TableModelListener]
+    val auction = mock[Auction]
+    val sniper = new AuctionSniper("item-id", auction)
+    val anotherSniper = new AuctionSniper("another-item-id", auction)
     def before = model.addTableModelListener(listener)
   }
 
@@ -24,10 +27,9 @@ class SnipersTableModelTest extends Specification {
 
     "set sniper values in columns" in new mock {
 
-      val joining = SniperSnapshot.joining("item-id")
-      val bidding = joining.bidding(555, 666)
+      val bidding = sniper.getSnapshot.bidding(555, 666)
 
-      model += joining
+      model += sniper
       model.sniperStateChanged(bidding)
 
       assertRowMatchesSnapshot(0, bidding)
@@ -46,24 +48,22 @@ class SnipersTableModelTest extends Specification {
 
     "notify listeners when adding a sniper" in new mock {
 
-      val joining = SniperSnapshot.joining("item123")
-
       model.getRowCount must_== 0
 
-      model += joining
+      model += sniper
 
       model.getRowCount must_== 1
-      assertRowMatchesSnapshot(0, joining)
+      assertRowMatchesSnapshot(0, sniper.getSnapshot)
 
       there was one(listener).tableChanged(anArgThat(anInsertionAtRow(0)))
     }
 
     "hold snipers in addition order" in new mock {
-      model += SniperSnapshot.joining("item 0")
-      model += SniperSnapshot.joining("item 1")
+      model += sniper
+      model += anotherSniper
 
-      cellValue(0, Column.ITEM_IDENTIFIER) must_== "item 0"
-      cellValue(1, Column.ITEM_IDENTIFIER) must_== "item 1"
+      cellValue(0, Column.ITEM_IDENTIFIER) must_== "item-id"
+      cellValue(1, Column.ITEM_IDENTIFIER) must_== "another-item-id"
     }
   }
 

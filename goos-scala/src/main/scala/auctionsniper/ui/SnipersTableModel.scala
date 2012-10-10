@@ -15,7 +15,8 @@ object SnipersTableModel {
 
 class SnipersTableModel extends AbstractTableModel with SniperListener with SniperCollector {
 
-  private var snapshots = new ArrayBuffer[SniperSnapshot]
+  private val snapshots = new ArrayBuffer[SniperSnapshot]
+  private val notToBeGCd = new ArrayBuffer[AuctionSniper]
 
   def getRowCount = snapshots.size
 
@@ -47,5 +48,15 @@ class SnipersTableModel extends AbstractTableModel with SniperListener with Snip
     }
   }
 
-  def +=(sniper: AuctionSniper) {}
+  def +=(sniper: AuctionSniper) {
+    notToBeGCd += sniper
+    addSniperSnapshot(sniper.getSnapshot)
+    sniper += new SwingThreadSniperListener(this)
+  }
+
+  private def addSniperSnapshot(sniperSnapshot: SniperSnapshot) {
+    snapshots += sniperSnapshot
+    val row = snapshots.size - 1
+    fireTableRowsInserted(row, row)
+  }
 }
