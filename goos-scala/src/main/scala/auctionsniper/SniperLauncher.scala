@@ -1,7 +1,5 @@
 package auctionsniper
 
-import javax.swing.SwingUtilities
-
 class SniperLauncher(auctionHouse: AuctionHouse, collector: SniperCollector)
   extends UserRequestListener {
 
@@ -12,15 +10,5 @@ class SniperLauncher(auctionHouse: AuctionHouse, collector: SniperCollector)
     collector += sniper
     auction.join()
   }
-
-  class SwingThreadSniperListener(val delegate: SniperListener) extends SniperListener {
-
-    def sniperStateChanged(snapshot: SniperSnapshot) {
-      SwingUtilities.invokeLater(new Runnable {
-        def run() {
-          delegate.sniperStateChanged(snapshot)
-        }
-      })
-    }
-  }
 }
+
