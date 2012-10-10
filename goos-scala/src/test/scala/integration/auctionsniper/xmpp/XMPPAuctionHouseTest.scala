@@ -2,18 +2,17 @@ package integration.auctionsniper.xmpp
 
 import org.specs2.mutable.{BeforeAfter, Specification}
 import java.util.concurrent.{TimeUnit, CountDownLatch}
-import auctionsniper.xmpp.XMPPAuction
+import auctionsniper.xmpp.XMPPAuctionHouse
 import end2end.auctionsniper.{ApplicationRunner, FakeAuctionServer}
-import org.jivesoftware.smack.XMPPConnection
 import auctionsniper.{PriceSource, AuctionEventListener}
 
-class XMPPAuctionTest extends Specification {
+class XMPPAuctionHouseTest extends Specification {
 
   "XMPPAuction" should {
     "receive events from auction server after joining" in new beforeafter {
       val auctionWasClosed = new CountDownLatch(1)
 
-      val auction = new XMPPAuction(connection, auctionServer.itemId)
+      val auction = auctionHouse.auctionFor(auctionServer.itemId)
       auction += auctionClosedListener(auctionWasClosed)
 
       auction.join()
@@ -25,16 +24,17 @@ class XMPPAuctionTest extends Specification {
   }
 
   trait beforeafter extends BeforeAfter {
-    val connection = new XMPPConnection(FakeAuctionServer.XMPP_HOSTNAME)
+    val auctionHouse = XMPPAuctionHouse.connect(
+      FakeAuctionServer.XMPP_HOSTNAME,
+      ApplicationRunner.SNIPER_ID,
+      ApplicationRunner.SNIPER_PASSWORD)
     val auctionServer = new FakeAuctionServer("item-54321")
-    def before {
-      connection.connect()
-      connection.login(ApplicationRunner.SNIPER_ID, ApplicationRunner.SNIPER_PASSWORD, XMPPAuction.AUCTION_RESOURCE)
-      auctionServer.startSellingItem()
-    }
+
+    def before = auctionServer.startSellingItem()
+
     def after {
       auctionServer.stop()
-      connection.disconnect()
+      auctionHouse.disconnect()
     }
   }
 
