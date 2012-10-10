@@ -53,7 +53,7 @@ class ApplicationRunner {
     driver = Some(d)
   }
 
-  def showsSniperHasLostAcution() {
+  def showsSniperHasLostAcution(auction: FakeAuctionServer, lastPrice: Int, lastBid: Int) {
     driver.foreach(_.showsSniperStatus(SnipersTableModel.textFor(SniperState.LOST)))
   }
 
@@ -74,6 +74,15 @@ class ApplicationRunner {
   def showsSniperHasWonAcution(auction: FakeAuctionServer, lastPrice: Int) {
     driver.foreach(
       _.showsSniperStatus(auction.itemId, lastPrice, lastPrice, SnipersTableModel.textFor(SniperState.WON)))
+  }
+
+  def hasShownSniperIsLosing(auction: FakeAuctionServer, lastPrice: Int, lastBid: Int) {
+    driver.foreach(
+      _.showsSniperStatus(auction.itemId, lastPrice, lastBid, SnipersTableModel.textFor(SniperState.LOSING)))
+  }
+
+  def startBiddingWithStopPrice(auction: FakeAuctionServer, stopPrice: Int) {
+    startSniper()
   }
 }
 

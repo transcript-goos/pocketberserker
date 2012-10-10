@@ -18,7 +18,10 @@ object SniperState {
   object WINNING extends SniperState(2) {
     override def whenAuctionClosed = WON
   }
-  object LOST extends SniperState(3)
-  object WON extends SniperState(4)
+  object LOSING extends SniperState(3) {
+    override def whenAuctionClosed = LOST
+  }
+  object LOST extends SniperState(4)
+  object WON extends SniperState(5)
 }
 
