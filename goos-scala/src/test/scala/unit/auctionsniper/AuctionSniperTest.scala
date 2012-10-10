@@ -1,11 +1,10 @@
 package unit.auctionsniper
 
-import org.specs2.mutable.Specification
+import org.specs2.mutable.{Before, Specification}
 import org.specs2.mock.Mockito
 import auctionsniper._
 import org.hamcrest.{FeatureMatcher, CoreMatchers}
 import auctionsniper.SniperState.{WON, LOST, WINNING, BIDDING}
-import org.specs2.specification.Scope
 
 object AuctionSniperTest {
   val ITEM_ID: String = "item-id"
@@ -15,10 +14,11 @@ class AuctionSniperTest extends Specification {
 
   import AuctionSniperTest._
 
-  trait mock extends Scope with Mockito {
+  trait mock extends Before with Mockito {
     lazy val sniperListener = mock[SniperListener]
     lazy val auction = mock[Auction]
-    lazy val sniper = new AuctionSniper(ITEM_ID, auction, sniperListener)
+    lazy val sniper = new AuctionSniper(ITEM_ID, auction)
+    def before = sniper += sniperListener
   }
 
   "AuctionSniper" should {

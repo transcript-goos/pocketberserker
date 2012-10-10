@@ -6,11 +6,6 @@ class AuctionSniper(private val itemId: String, private val auction: Auction)
   private var sniperListener: Option[SniperListener] = None
   private var snapshot = SniperSnapshot.joining(itemId)
 
-  def this(itemId: String, auction: Auction, sniperListener: SniperListener) {
-    this(itemId, auction)
-    this.sniperListener = Some(sniperListener)
-  }
-
   def auctionClosed() {
     snapshot = snapshot.closed()
     notifyChange()
