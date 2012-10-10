@@ -61,6 +61,16 @@ class AuctionMessageTranslatorTest extends Specification with Mockito {
       translator.processMessage(UNUSED_CHAT, message)
       there was one(listener).auctionFailed()
     }
+
+    "notify auction failed when event type missing" in {
+      val message = new Message()
+      message.setBody(
+        "SOLVersion: 1.1; CurrentPrice: 234; Increment: 5; Bidder: " + SNIPER_ID + ";"
+      )
+
+      translator.processMessage(UNUSED_CHAT, message)
+      there was one(listener).auctionFailed()
+    }
   }
 }
 
