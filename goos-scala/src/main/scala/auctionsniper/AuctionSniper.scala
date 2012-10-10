@@ -1,9 +1,15 @@
 package auctionsniper
 
-class AuctionSniper(private val itemId: String, private val auction: Auction, private val sniperListener: SniperListener)
+class AuctionSniper(private val itemId: String, private val auction: Auction)
   extends AuctionEventListener {
 
+  private var sniperListener: Option[SniperListener] = None
   private var snapshot = SniperSnapshot.joining(itemId)
+
+  def this(itemId: String, auction: Auction, sniperListener: SniperListener) {
+    this(itemId, auction)
+    this.sniperListener = Some(sniperListener)
+  }
 
   def auctionClosed() {
     snapshot = snapshot.closed()
@@ -22,7 +28,11 @@ class AuctionSniper(private val itemId: String, private val auction: Auction, pr
   }
 
   def notifyChange() {
-    sniperListener.sniperStateChanged(snapshot)
+    sniperListener.foreach(_.sniperStateChanged(snapshot))
+  }
+
+  def +=(listener: SniperListener) {
+    sniperListener = Some(listener)
   }
 }
 
