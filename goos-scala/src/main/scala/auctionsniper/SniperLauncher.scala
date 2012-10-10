@@ -1,20 +1,15 @@
 package auctionsniper
 
-import ui.SnipersTableModel
-import collection.mutable.ArrayBuffer
 import javax.swing.SwingUtilities
 
-class SniperLauncher(auctionHouse: AuctionHouse, snipers: SnipersTableModel)
+class SniperLauncher(auctionHouse: AuctionHouse, collector: SniperCollector)
   extends UserRequestListener {
 
-  private val notToBeGCd = new ArrayBuffer[Auction]
-
   def joinAuction(itemId: String) {
-    snipers += SniperSnapshot.joining(itemId)
     val auction = auctionHouse.auctionFor(itemId)
-    notToBeGCd += auction
-    val sniper = new AuctionSniper(itemId, auction, new SwingThreadSniperListener(snipers))
+    val sniper = new AuctionSniper(itemId, auction)
     auction += sniper
+    collector += sniper
     auction.join()
   }
 

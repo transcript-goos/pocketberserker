@@ -1,9 +1,10 @@
 package auctionsniper.ui
 
 import javax.swing.table.AbstractTableModel
-import auctionsniper.{SniperListener, SniperState, SniperSnapshot}
+import auctionsniper._
 import collection.mutable.ArrayBuffer
 import com.objogate.exception.Defect
+import scala.Some
 
 object SnipersTableModel {
   private val STATUS_TEXT = Array("Joinning",
@@ -12,7 +13,7 @@ object SnipersTableModel {
   def textFor(state: SniperState) = STATUS_TEXT(state.ordinal)
 }
 
-class SnipersTableModel extends AbstractTableModel with SniperListener {
+class SnipersTableModel extends AbstractTableModel with SniperListener with SniperCollector {
 
   private var snapshots = new ArrayBuffer[SniperSnapshot]
 
@@ -45,4 +46,6 @@ class SnipersTableModel extends AbstractTableModel with SniperListener {
       case None => throw new Defect("Cannot find match for " + snapshot)
     }
   }
+
+  def +=(sniper: AuctionSniper) {}
 }
