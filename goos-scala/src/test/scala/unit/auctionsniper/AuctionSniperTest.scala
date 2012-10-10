@@ -19,7 +19,8 @@ class AuctionSniperTest extends Specification {
   trait mock extends Before with Mockito {
     lazy val sniperListener = mock[SniperListener]
     lazy val auction = mock[Auction]
-    lazy val sniper = new AuctionSniper(ITEM_ID, auction)
+    lazy val item = Item(ITEM_ID, 1234)
+    lazy val sniper = new AuctionSniper(item, auction)
     def before = sniper += sniperListener
   }
 

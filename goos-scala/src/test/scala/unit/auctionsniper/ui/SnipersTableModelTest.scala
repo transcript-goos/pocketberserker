@@ -4,7 +4,7 @@ import org.specs2.mutable.{Before, Specification}
 import org.specs2.mock.Mockito
 import javax.swing.event.{TableModelEvent, TableModelListener}
 import auctionsniper.ui.{Column, SnipersTableModel}
-import auctionsniper.{AuctionSniper, Auction, SniperSnapshot}
+import auctionsniper.{Item, AuctionSniper, Auction, SniperSnapshot}
 import org.hamcrest.Matchers
 
 class SnipersTableModelTest extends Specification {
@@ -15,8 +15,8 @@ class SnipersTableModelTest extends Specification {
   trait mock extends Mockito with Before {
     val listener = mock[TableModelListener]
     val auction = mock[Auction]
-    val sniper = new AuctionSniper("item-id", auction)
-    val anotherSniper = new AuctionSniper("another-item-id", auction)
+    val sniper = new AuctionSniper(Item("item-id", Int.MaxValue), auction)
+    val anotherSniper = new AuctionSniper(Item("another-item-id", Int.MaxValue), auction)
     def before = model.addTableModelListener(listener)
   }
 

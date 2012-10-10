@@ -1,10 +1,10 @@
 package auctionsniper
 
-class AuctionSniper(private val itemId: String, private val auction: Auction)
+class AuctionSniper(private val item: Item, private val auction: Auction)
   extends AuctionEventListener {
 
   private var sniperListener: Option[SniperListener] = None
-  private var snapshot = SniperSnapshot.joining(itemId)
+  private var snapshot = SniperSnapshot.joining(item.identifier)
 
   def auctionClosed() {
     snapshot = snapshot.closed()

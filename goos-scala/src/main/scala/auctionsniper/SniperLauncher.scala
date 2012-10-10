@@ -5,7 +5,7 @@ class SniperLauncher(auctionHouse: AuctionHouse, collector: SniperCollector)
 
   def joinAuction(item: Item) {
     val auction = auctionHouse.auctionFor(item.identifier)
-    val sniper = new AuctionSniper(item.identifier, auction)
+    val sniper = new AuctionSniper(item, auction)
     auction += sniper
     collector += sniper
     auction.join()
