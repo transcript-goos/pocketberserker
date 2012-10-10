@@ -23,7 +23,7 @@ class MainWindowTest extends Specification {
           }
         }
 
-      driver.startBiddingFor("an item-id")
+      driver.startBiddingFor("an item-id", Int.MaxValue)
       driver.check(buttonProbs)
     }
   }

@@ -26,13 +26,7 @@ class ApplicationRunner {
 
   def startBiddingIn(auctions: FakeAuctionServer*) {
     startSniper()
-    auctions.foreach{ (auction: FakeAuctionServer) =>
-      val itemId = auction.itemId
-      driver.foreach{ (d: AuctionSniperDriver) =>
-        d.startBiddingFor(itemId)
-        d.showsSniperStatus(itemId, 0, 0, SnipersTableModel.textFor(SniperState.JOINNING))
-      }
-    }
+    auctions.foreach(openBiddingFor(_, Int.MaxValue))
   }
 
   private def startSniper() {
@@ -83,6 +77,15 @@ class ApplicationRunner {
 
   def startBiddingWithStopPrice(auction: FakeAuctionServer, stopPrice: Int) {
     startSniper()
+    openBiddingFor(auction, stopPrice)
+  }
+
+  private def openBiddingFor(auction: FakeAuctionServer, stopPrice: Int) {
+    val itemId = auction.itemId
+    driver.foreach{ (d: AuctionSniperDriver) =>
+      d.startBiddingFor(itemId, stopPrice)
+      d.showsSniperStatus(itemId, 0, 0, SnipersTableModel.textFor(SniperState.JOINNING))
+    }
   }
 }
 

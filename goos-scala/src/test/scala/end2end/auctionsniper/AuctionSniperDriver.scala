@@ -42,15 +42,16 @@ class AuctionSniperDriver(val timeoutMillis: Int)
   }
 
   @SuppressWarnings(Array("unchecked"))
-  def startBiddingFor(itemId: String) {
-    itemField.replaceAllText(itemId)
+  def startBiddingFor(itemId: String, stopPrice: Int) {
+    textField(MainWindow.NEW_ITEM_ID_NAME).replaceAllText(itemId)
+    textField(MainWindow.NEW_ITEM_STOP_PRICE_NAME).replaceAllText(stopPrice.toString)
     bidButton.click()
   }
 
-  private def itemField = {
-    val newItemId = new JTextFieldDriver(this, classOf[JTextField], ComponentDriver.named(MainWindow.NEW_ITEM_ID_NAME))
-    newItemId.focusWithMouse()
-    newItemId
+  private def textField(fieldName: String) = {
+    val newTextField = new JTextFieldDriver(this, classOf[JTextField], ComponentDriver.named(fieldName))
+    newTextField.focusWithMouse()
+    newTextField
   }
 
   private def bidButton =
