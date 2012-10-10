@@ -9,7 +9,15 @@ class AuctionMessageTranslator(
   private val listener: AuctionEventListener) extends MessageListener {
 
   def processMessage(chat: Chat, message: Message) {
-    val event = AuctionEvent.from(message.getBody)
+    try {
+      translate(message.getBody)
+    } catch {
+      case parseError: Exception => listener.auctionFailed()
+    }
+  }
+
+  private def translate(messageBody: String) {
+    val event = AuctionEvent.from(messageBody)
     event.eventType match {
       case Close() => listener.auctionClosed()
       case Price(currentPrice, increment) =>
