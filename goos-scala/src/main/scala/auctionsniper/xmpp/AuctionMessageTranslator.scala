@@ -30,11 +30,7 @@ class AuctionMessageTranslator(
     def eventType =
       fields.get("Event") match {
         case Some("CLOSE") => Close()
-        case Some("PRICE") =>
-          (fields.get("CurrentPrice"), fields.get("Increment")) match {
-            case (Some(price), Some(increment)) => Price(price.toInt, increment.toInt)
-            case other => throw new MissingValueException(other.toString)
-          }
+        case Some("PRICE") => price
         case fieldName => throw new MissingValueException(fieldName.toString)
       }
 
@@ -45,6 +41,12 @@ class AuctionMessageTranslator(
       case Some(bidder) => bidder
       case other => throw new MissingValueException(other.toString)
     }
+
+    def price =
+      (fields.get("CurrentPrice"), fields.get("Increment")) match {
+        case (Some(price), Some(increment)) => Price(price.toInt, increment.toInt)
+        case other => throw new MissingValueException(other.toString)
+      }
   }
 
   private object AuctionEvent {
