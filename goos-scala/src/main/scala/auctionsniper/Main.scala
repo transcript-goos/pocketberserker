@@ -21,12 +21,9 @@ object Main {
 class Main {
 
   import ui.MainWindow
-  import scala.collection.mutable.ListBuffer
 
   private var window : Option[MainWindow] = None
   private val snipers = new SnipersTableModel
-
-  private val notToBeGCd = new ListBuffer[Auction]
 
   startUserInterface()
 
@@ -49,29 +46,7 @@ class Main {
   }
 
   private def addUserRequestListenerFor(auctionHouse: AuctionHouse) {
-    window.foreach(
-      _ += new UserRequestListener {
-        def joinAuction(itemId: String) {
-          snipers += SniperSnapshot.joining(itemId)
-          val auction = auctionHouse.auctionFor(itemId)
-          notToBeGCd += auction
-          auction += new AuctionSniper(
-            itemId, auction, new SwingThreadSniperListener(snipers))
-          auction.join()
-        }
-      }
-    )
-  }
-
-  class SwingThreadSniperListener(val delegate: SniperListener) extends SniperListener {
-
-    def sniperStateChanged(snapshot: SniperSnapshot) {
-      SwingUtilities.invokeLater(new Runnable {
-        def run() {
-          delegate.sniperStateChanged(snapshot)
-        }
-      })
-    }
+    window.foreach( _ += new SniperLauncher(auctionHouse, snipers))
   }
 }
 
