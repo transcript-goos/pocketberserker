@@ -54,6 +54,13 @@ class AuctionMessageTranslatorTest extends Specification with Mockito {
 
       there was one(listener).currentPrice(234, 5, FromSniper())
     }
+
+    "notify auction failed when bad message received" in {
+      val message = new Message()
+      message.setBody("a bad message")
+      translator.processMessage(UNUSED_CHAT, message)
+      there was one(listener).auctionFailed()
+    }
   }
 }
 
