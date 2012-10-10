@@ -29,7 +29,7 @@ class SnipersTableModelTest extends Specification {
 
       val bidding = sniper.getSnapshot.bidding(555, 666)
 
-      model += sniper
+      model.sniperAdded(sniper)
       model.sniperStateChanged(bidding)
 
       assertRowMatchesSnapshot(0, bidding)
@@ -50,7 +50,7 @@ class SnipersTableModelTest extends Specification {
 
       model.getRowCount must_== 0
 
-      model += sniper
+      model.sniperAdded(sniper)
 
       model.getRowCount must_== 1
       assertRowMatchesSnapshot(0, sniper.getSnapshot)
@@ -59,8 +59,8 @@ class SnipersTableModelTest extends Specification {
     }
 
     "hold snipers in addition order" in new mock {
-      model += sniper
-      model += anotherSniper
+      model.sniperAdded(sniper)
+      model.sniperAdded(anotherSniper)
 
       cellValue(0, Column.ITEM_IDENTIFIER) must_== "item-id"
       cellValue(1, Column.ITEM_IDENTIFIER) must_== "another-item-id"
