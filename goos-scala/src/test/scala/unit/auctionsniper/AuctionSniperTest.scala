@@ -4,7 +4,9 @@ import org.specs2.mutable.{Before, Specification}
 import org.specs2.mock.Mockito
 import auctionsniper._
 import org.hamcrest.{FeatureMatcher, CoreMatchers}
-import auctionsniper.SniperState.{WON, LOST, WINNING, BIDDING}
+import auctionsniper.SniperState._
+import auctionsniper.FromOtherBidder
+import auctionsniper.FromSniper
 
 object AuctionSniperTest {
   val ITEM_ID: String = "item-id"
@@ -65,6 +67,21 @@ class AuctionSniperTest extends Specification {
       got {
         atLeast(0)(sniperListener).sniperStateChanged(anArgThat(aSniperThatIs(WINNING)))
         atLeastOne(sniperListener).sniperStateChanged(anArgThat(aSniperThatIs(WON)))
+      }
+    }
+
+    "not bid and reports losing if subsequent price is above stop price" in new mock {
+      there was atLeast(0)(sniperListener).sniperStateChanged(anArgThat(aSniperThatIs(BIDDING)))
+
+      sniper.currentPrice(123, 45, FromOtherBidder())
+      sniper.currentPrice(2345, 25, FromOtherBidder())
+
+      got {
+        val bid = 123 + 45
+        atLeast(0)(auction).bid(bid)
+        atLeast(1)(sniperListener).sniperStateChanged(
+          new SniperSnapshot(ITEM_ID, 2345, bid, LOSING)
+        )
       }
     }
   }
