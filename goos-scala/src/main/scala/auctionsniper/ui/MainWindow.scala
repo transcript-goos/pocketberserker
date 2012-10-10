@@ -5,6 +5,7 @@ import java.awt.{FlowLayout, BorderLayout}
 import auctionsniper.{SniperPortfolio, UserRequestListener}
 import auctionsniper.util.Announcer
 import java.awt.event.{ActionEvent, ActionListener}
+import java.text.NumberFormat
 
 object MainWindow {
   val MAIN_WINDOW_NAME = "Auction Sniper Main"
@@ -45,10 +46,17 @@ class MainWindow(val portfolio: SniperPortfolio) extends JFrame(APPLICATION_TITL
 
   private def makeControls() = {
     val controls = new JPanel(new FlowLayout())
+    controls.add(new JLabel("item:"))
     val itemIdField = new JTextField()
     itemIdField.setColumns(25)
     itemIdField.setName(NEW_ITEM_ID_NAME)
     controls.add(itemIdField)
+
+    controls.add(new JLabel("Stop price:"))
+    val stopPriceField = new JFormattedTextField(NumberFormat.getIntegerInstance)
+    stopPriceField.setColumns(7)
+    stopPriceField.setName(NEW_ITEM_STOP_PRICE_NAME)
+    controls.add(stopPriceField)
 
     val joinAuctionButton = new JButton("Join Auction")
     joinAuctionButton.setName(JOIN_BUTTON_NAME)
