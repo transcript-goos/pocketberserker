@@ -13,6 +13,8 @@ case class SniperSnapshot (
 
   def closed() = copy(state = state.whenAuctionClosed)
 
+  def losing(newLastPrice: Int) = copy(lastPrice = newLastPrice, state = SniperState.LOSING)
+
   def isForSameItemAs(snapshot: SniperSnapshot) =
     itemId == snapshot.itemId
 }

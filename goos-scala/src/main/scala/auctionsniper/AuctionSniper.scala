@@ -16,8 +16,12 @@ class AuctionSniper(private val item: Item, private val auction: Auction)
       case FromSniper() => snapshot = snapshot.winning(price)
       case FromOtherBidder() =>
         val bid = price + increment
-        auction.bid(price + increment)
-        snapshot = snapshot.bidding(price, bid)
+        if (item.allowsBid(bid)) {
+          auction.bid(price + increment)
+          snapshot = snapshot.bidding(price, bid)
+        } else {
+          snapshot = snapshot.losing(price)
+        }
     }
     notifyChange()
   }

@@ -1,4 +1,6 @@
 package auctionsniper
 
-case class Item(identifier: String, stopPrice: Int)
+case class Item(identifier: String, stopPrice: Int) {
+  def allowsBid(bid: Int) = bid <= stopPrice
+}
 
