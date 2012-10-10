@@ -47,16 +47,12 @@ class MainWindow(val portfolio: SniperPortfolio) extends JFrame(APPLICATION_TITL
   private def makeControls() = {
     val controls = new JPanel(new FlowLayout())
     controls.add(new JLabel("item:"))
-    val itemIdField = new JTextField()
-    itemIdField.setColumns(25)
-    itemIdField.setName(NEW_ITEM_ID_NAME)
+
+    val itemIdField = makeItemIdField
     controls.add(itemIdField)
 
     controls.add(new JLabel("Stop price:"))
-    val stopPriceField = new JFormattedTextField(NumberFormat.getIntegerInstance)
-    stopPriceField.setColumns(7)
-    stopPriceField.setName(NEW_ITEM_STOP_PRICE_NAME)
-    controls.add(stopPriceField)
+    controls.add(makeStopPriceField)
 
     val joinAuctionButton = new JButton("Join Auction")
     joinAuctionButton.setName(JOIN_BUTTON_NAME)
@@ -72,6 +68,20 @@ class MainWindow(val portfolio: SniperPortfolio) extends JFrame(APPLICATION_TITL
 
   def +=(listener: UserRequestListener) {
     userRequests += listener
+  }
+
+  private def makeItemIdField = {
+    val itemIdField = new JTextField()
+    itemIdField.setColumns(25)
+    itemIdField.setName(NEW_ITEM_ID_NAME)
+    itemIdField
+  }
+
+  private def makeStopPriceField = {
+    val stopPriceField = new JFormattedTextField(NumberFormat.getIntegerInstance)
+    stopPriceField.setColumns(7)
+    stopPriceField.setName(NEW_ITEM_STOP_PRICE_NAME)
+    stopPriceField
   }
 }
 
