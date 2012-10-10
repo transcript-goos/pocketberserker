@@ -2,7 +2,7 @@ package auctionsniper.ui
 
 import javax.swing._
 import java.awt.{FlowLayout, BorderLayout}
-import auctionsniper.{SniperPortfolio, UserRequestListener}
+import auctionsniper.{Item, SniperPortfolio, UserRequestListener}
 import auctionsniper.util.Announcer
 import java.awt.event.{ActionEvent, ActionListener}
 import java.text.NumberFormat
@@ -52,14 +52,19 @@ class MainWindow(val portfolio: SniperPortfolio) extends JFrame(APPLICATION_TITL
     controls.add(itemIdField)
 
     controls.add(new JLabel("Stop price:"))
-    controls.add(makeStopPriceField)
+    val stopPriceField = makeStopPriceField
+    controls.add(stopPriceField)
 
     val joinAuctionButton = new JButton("Join Auction")
     joinAuctionButton.setName(JOIN_BUTTON_NAME)
     joinAuctionButton.addActionListener(new ActionListener {
       def actionPerformed(e: ActionEvent) {
-        userRequests.announce().joinAuction(itemIdField.getText)
+        userRequests.announce().joinAuction(Item(itemId, stopPrice))
       }
+
+      private def itemId = itemIdField.getText
+
+      private def stopPrice = stopPriceField.getValue.asInstanceOf[Number].intValue()
     })
     controls.add(joinAuctionButton)
 

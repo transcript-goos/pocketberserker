@@ -18,7 +18,7 @@ class SniperLauncherTest extends Specification with Mockito {
 
       auctionHouse.auctionFor(itemId) returns auction
 
-      launcher.joinAuction(itemId)
+      launcher.joinAuction(Item(itemId, Int.MaxValue))
 
       got {
         atLeast(0)(auctionHouse).auctionFor(itemId)

@@ -4,7 +4,7 @@ import org.specs2.mutable.Specification
 import auctionsniper.ui.MainWindow
 import com.objogate.wl.swing.probe.ValueMatcherProbe
 import org.hamcrest.Matchers
-import auctionsniper.{SniperPortfolio, UserRequestListener}
+import auctionsniper.{Item, SniperPortfolio, UserRequestListener}
 import end2end.auctionsniper.AuctionSniperDriver
 import org.specs2.mutable.After
 
@@ -15,16 +15,17 @@ class MainWindowTest extends Specification {
 
   "MainWindow" should {
     "make user request when join button clicked" in new tearDown {
-      val buttonProbs = new ValueMatcherProbe[String](Matchers.equalTo("an item-id"), "join request")
+      val itemProbs = new ValueMatcherProbe[Item](
+        Matchers.equalTo(Item("an item-id", 789)), "join request")
 
       mainWindow += new UserRequestListener {
-          def joinAuction(itemId: String) {
-            buttonProbs.setReceivedValue(itemId)
+          def joinAuction(item: Item) {
+            itemProbs.setReceivedValue(item)
           }
         }
 
-      driver.startBiddingFor("an item-id", Int.MaxValue)
-      driver.check(buttonProbs)
+      driver.startBiddingFor("an item-id", 789)
+      driver.check(itemProbs)
     }
   }
 
