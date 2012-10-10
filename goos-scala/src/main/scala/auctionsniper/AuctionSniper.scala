@@ -31,6 +31,8 @@ class AuctionSniper(private val itemId: String, private val auction: Auction)
     sniperListener.foreach(_.sniperStateChanged(snapshot))
   }
 
+  def getSnapshot = snapshot
+
   def +=(listener: SniperListener) {
     sniperListener = Some(listener)
   }
