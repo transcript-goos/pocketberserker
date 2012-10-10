@@ -28,16 +28,23 @@ class AuctionMessageTranslator(
   private class AuctionEvent(val fields: Map[String, String]) {
 
     def eventType =
-      fields("Event") match {
-        case "CLOSE" => Close()
-        case "PRICE" => Price(fields("CurrentPrice").toInt, fields("Increment").toInt)
-        case other => throw new Exception("Missing value for" + other)
+      fields.get("Event") match {
+        case Some("CLOSE") => Close()
+        case Some("PRICE") =>
+          (fields.get("CurrentPrice"), fields.get("Increment")) match {
+            case (Some(price), Some(increment)) => Price(price.toInt, increment.toInt)
+            case other => throw new MissingValueException(other.toString)
+          }
+        case fieldName => throw new MissingValueException(fieldName.toString)
       }
 
     def isFrom(sniperId: String) =
       if(sniperId.equals(bidder)) FromSniper() else FromOtherBidder()
 
-    def bidder = fields("Bidder")
+    def bidder = fields.get("Bidder") match {
+      case Some(bidder) => bidder
+      case other => throw new MissingValueException(other.toString)
+    }
   }
 
   private object AuctionEvent {
@@ -56,5 +63,8 @@ class AuctionMessageTranslator(
   trait EventType {}
   case class Close() extends EventType
   case class Price(currentPrice: Int, increment: Int) extends EventType
+
+  private class MissingValueException(fieldName: String)
+    extends Exception("Missing value for " + fieldName) {}
 }
 
