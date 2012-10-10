@@ -35,5 +35,7 @@ class AuctionSniper(private val item: Item, private val auction: Auction)
   def +=(listener: SniperListener) {
     sniperListener = Some(listener)
   }
+
+  def auctionFailed() {}
 }
 

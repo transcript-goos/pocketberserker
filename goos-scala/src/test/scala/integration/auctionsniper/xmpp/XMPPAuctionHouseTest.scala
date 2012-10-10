@@ -42,5 +42,6 @@ class XMPPAuctionHouseTest extends Specification {
     new AuctionEventListener {
       def currentPrice(price: Int, increment: Int, priceSource: PriceSource) {}
       def auctionClosed() { auctionWasClosed.countDown() }
+      def auctionFailed() {}
     }
 }
