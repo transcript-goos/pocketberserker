@@ -4,15 +4,19 @@ import org.jivesoftware.smack.{Chat, MessageListener}
 import org.jivesoftware.smack.packet.Message
 import auctionsniper.{FromOtherBidder, FromSniper, AuctionEventListener}
 
-class AuctionMessageTranslator(
+class AuctionMessageTranslator (
   private val sniperId: String,
-  private val listener: AuctionEventListener) extends MessageListener {
+  private val listener: AuctionEventListener,
+  private val failurereporter: XMPPFailureReporter) extends MessageListener {
 
   def processMessage(chat: Chat, message: Message) {
+    val body = message.getBody
     try {
-      translate(message.getBody)
+      translate(body)
     } catch {
-      case parseError: Exception => listener.auctionFailed()
+      case parseError: Exception =>
+        failurereporter.cannotTranslateMessage(sniperId, body, parseError)
+        listener.auctionFailed()
     }
   }
 

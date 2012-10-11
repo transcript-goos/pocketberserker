@@ -47,7 +47,10 @@ class XMPPAuction(val connection: XMPPConnection, itemId: String) extends Auctio
   private def translatorFor(connection: XMPPConnection) =
     new AuctionMessageTranslator(
       connection.getUser,
-      auctionEventListeners.announce()
+      auctionEventListeners.announce(),
+      new XMPPFailureReporter {
+        def cannotTranslateMessage(auctionId: String, failedMessage: String, exception: Exception) {}
+      }
     )
 
   private def chatDisconnectorFor(translator: AuctionMessageTranslator) = {

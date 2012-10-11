@@ -21,7 +21,7 @@ class AuctionMessageTranslatorTest extends Specification {
   trait mock extends Scope with Mockito {
     val listener = mock[AuctionEventListener]
     val failureReport = mock[XMPPFailureReporter]
-    val translator = new AuctionMessageTranslator(SNIPER_ID, listener)
+    val translator = new AuctionMessageTranslator(SNIPER_ID, listener, failureReport)
 
     def expectFailureWithMessage(badMessage: String) {
       got {
