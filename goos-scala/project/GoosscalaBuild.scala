@@ -16,7 +16,9 @@ object GoosscalaBuild extends Build {
         "org.hamcrest" % "hamcrest-library" % "1.3",
         "jivesoftware" % "smack" % "3.1.0",
         "jivesoftware" % "smackx" % "3.1.0",
-        "org.mockito" % "mockito-all" % "1.9.0"
+        "org.mockito" % "mockito-all" % "1.9.0",
+        "org.apache.commons" % "commons-lang3" % "3.1",
+        "commons-io" % "commons-io" % "2.4"
       ),
       resolvers ++= Seq(
         "snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",

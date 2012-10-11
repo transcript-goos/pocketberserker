@@ -1,6 +1,7 @@
 package end2end.auctionsniper
 
 import auctionsniper.ui.SnipersTableModel
+import org.specs2.matcher.Matchers
 
 object ApplicationRunner {
   val SNIPER_ID = "sniper"
@@ -23,6 +24,7 @@ class ApplicationRunner {
   import ApplicationRunner._
 
   private var driver : Option[AuctionSniperDriver] = None
+  private val logDriver = new AuctionLogDriver()
 
   def startBiddingIn(auctions: FakeAuctionServer*) {
     startSniper()
@@ -30,6 +32,7 @@ class ApplicationRunner {
   }
 
   private def startSniper() {
+    logDriver.clearLog()
     val thread = new Thread("Test Application") {
       override def run() {
         try {
@@ -93,6 +96,8 @@ class ApplicationRunner {
       _.showsSniperStatus(auction.itemId, 0, 0, SnipersTableModel.textFor(SniperState.FAILED)))
   }
 
-  def reportsInvalidMessage(auction: FakeAuctionServer, brokenMessage: String) {}
+  def reportsInvalidMessage(auction: FakeAuctionServer, message: String) {
+    logDriver.hasEntry(Matchers.contain(message))
+  }
 }
 
