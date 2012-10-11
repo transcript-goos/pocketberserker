@@ -22,6 +22,16 @@ class AuctionSniperTest extends Specification {
     lazy val item = Item(ITEM_ID, 1234)
     lazy val sniper = new AuctionSniper(item, auction)
     def before = sniper += sniperListener
+
+    def expectSniperToFailWhenItIs() {
+      there was atLeast(1)(sniperListener).sniperStateChanged(
+        SniperSnapshot(ITEM_ID, 0, 0, SniperState.FAILED)
+      )
+    }
+
+    def allowingSniperBidding() {
+      there was atLeast(0)(sniperListener).sniperStateChanged(anArgThat(aSniperThatIs(BIDDING)))
+    }
   }
 
   "AuctionSniper" should {
@@ -72,7 +82,8 @@ class AuctionSniperTest extends Specification {
     }
 
     "not bid and reports losing if subsequent price is above stop price" in new mock {
-      there was atLeast(0)(sniperListener).sniperStateChanged(anArgThat(aSniperThatIs(BIDDING)))
+
+      allowingSniperBidding()
 
       sniper.currentPrice(123, 45, FromOtherBidder())
       sniper.currentPrice(2345, 25, FromOtherBidder())
@@ -84,6 +95,16 @@ class AuctionSniperTest extends Specification {
           new SniperSnapshot(ITEM_ID, 2345, bid, LOSING)
         )
       }
+    }
+
+    "report failed if auction fails when bidding" in new mock {
+
+      allowingSniperBidding()
+
+      sniper.currentPrice(123, 45, FromOtherBidder())
+      sniper.auctionFailed()
+
+      expectSniperToFailWhenItIs()
     }
   }
 
