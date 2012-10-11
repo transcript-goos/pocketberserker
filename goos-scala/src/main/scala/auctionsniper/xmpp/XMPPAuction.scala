@@ -14,7 +14,8 @@ object XMPPAuction {
     AUCTION_ID_FORMAT.format(itemId, connection.getServiceName)
 }
 
-class XMPPAuction(val connection: XMPPConnection, itemId: String) extends Auction {
+class XMPPAuction(connection: XMPPConnection, itemId: String,
+  failureReporter: XMPPFailureReporter) extends Auction {
 
   import XMPPAuction._
 
@@ -48,10 +49,7 @@ class XMPPAuction(val connection: XMPPConnection, itemId: String) extends Auctio
     new AuctionMessageTranslator(
       connection.getUser,
       auctionEventListeners.announce(),
-      new XMPPFailureReporter {
-        def cannotTranslateMessage(auctionId: String, failedMessage: String, exception: Exception) {}
-      }
-    )
+      failureReporter)
 
   private def chatDisconnectorFor(translator: AuctionMessageTranslator) = {
     new AuctionEventListener {
