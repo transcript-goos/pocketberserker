@@ -92,7 +92,7 @@ class AuctionSniperTest extends Specification {
         val bid = 123 + 45
         atLeast(0)(auction).bid(bid)
         atLeast(1)(sniperListener).sniperStateChanged(
-          new SniperSnapshot(ITEM_ID, 2345, bid, LOSING)
+          SniperSnapshot(ITEM_ID, 2345, bid, LOSING)
         )
       }
     }
