@@ -36,6 +36,9 @@ class AuctionSniper(private val item: Item, private val auction: Auction)
     sniperListener = Some(listener)
   }
 
-  def auctionFailed() {}
+  def auctionFailed() {
+    snapshot = snapshot.failed()
+    notifyChange()
+  }
 }
 

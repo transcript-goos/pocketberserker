@@ -15,6 +15,8 @@ case class SniperSnapshot (
 
   def losing(newLastPrice: Int) = copy(lastPrice = newLastPrice, state = SniperState.LOSING)
 
+  def failed() = copy(itemId = itemId, lastPrice = 0, lastBid = 0, state = SniperState.FAILED)
+
   def isForSameItemAs(snapshot: SniperSnapshot) =
     itemId == snapshot.itemId
 }
